@@ -42,6 +42,7 @@ body {
 }
 body{
   background-color: #FCFCFD;
+  overflow: scroll;
 }
 
 .custom-scrollbar::-webkit-scrollbar {

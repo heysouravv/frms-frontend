@@ -191,7 +191,7 @@ const Table = () => (
       </div>
     </div>
     <div className="relative w-full overflow-auto bg-white custom-scrollbar">
-      <table className="caption-bottom text-sm overflow-x-scroll w-[calc(100%+100px)] custom-scrollbar">
+      <table className="caption-bottom text-sm overflow-scroll h-[calc(100%-200px)] lg:w-[calc(100%+100px)] custom-scrollbar">
         <thead className="[&_tr]:border-b w-full">
           <tr className="border-b bg-[#F9FAFB] transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
       
