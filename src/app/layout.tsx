@@ -36,9 +36,9 @@ export default function RootLayout({
   }, []);
 
   // Conditionally render based on window width
-  if (windowWidth < 1024) { // Assuming tablet breakpoint at 1024px
+  if (windowWidth > 1024) { // Assuming tablet breakpoint at 1024px
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'white' }}>
+      <div className='flex justify-center items-center h-screen bg-white'>
         Please open this application in a Desktop browser for the best experience.
       </div>
     );
@@ -46,11 +46,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className="flex h-full">
+      <body className={`${inter.className} `} >
+        <div className='flex h-auto overflow-x-hidden'>
           <SideBar/>
           {children}
         </div>
+        
       </body>
     </html>
   );
