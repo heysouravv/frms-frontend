@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,11 +9,12 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme:light) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
+    font-family: "Inter", sans-serif;
   }
 }
 
@@ -30,4 +32,37 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.font-primaryOrange {
+ color:#FE4F00
+}
+.bg-primaryOrange {
+  background-color: #FE4F00;
+}
+body{
+  background-color: #FCFCFD;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Reduced width of the entire scrollbar */
+  border: .5px solid #DAE0E6;
+       
+          /* width of the entire scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;    
+  width: 5px;
+  /* color of the tracking area */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #DAE0E6;    /* color of the scroll thumb */
+  border-radius: 10px;       /* roundness of the scroll thumb */
+  border: 1px solid transparent;  /* creates padding around scroll thumb */
+}
+
+.submenu-trigger:hover svg {
+  fill: white;
 }
