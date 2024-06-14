@@ -1,5 +1,9 @@
-import React from "react";
+'use client'
+import React, { useState } from "react";
 import Table from "../components/Ineventory/Table/Table";
+import Popup from "../components/Ineventory/Popup/Popup";
+import Createdpopup from "../components/Ineventory/Popup/CreatedPopup";
+
 
 const page = () => {
   const productDetails = [
@@ -17,9 +21,21 @@ const page = () => {
     },
   ];
 
+
+  const [showProductPopup, setShowProductPopup] = useState(false);
+  const [showCreatedPopup, setShowCreatedPopup] = useState(false);
+
+  const handleCancel = () => {
+    setShowProductPopup(false);
+  };
+
+  const handleNext = () => {
+    setShowProductPopup(false);
+    setShowCreatedPopup(true);
+  };
   return (
     // Main Div
-    <div className="p-8 flex justify-start flex-col gap-y-3 items-start w-full">
+    <div className={`${showProductPopup ? "overflow-hidden  " :"overflow-auto"}   p-8 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
       {/* Breadcrumb */}
       <div className="flex justify-start items-center gap-x-5">
         <img src="/assets/Icons/HomeGray.svg" className="w-5" />
@@ -31,7 +47,7 @@ const page = () => {
         </p>
       </div>
 
-      {/* Inventory Management */}
+      /* Inventory Management */
       <div className="flex justify-between  items-center w-full">
         <div>
           <p className="font-semibold lg:text-2xl text-[#101828]">
@@ -45,13 +61,14 @@ const page = () => {
             <p className="text-[#344054] font-semibold">Import Products</p>
           </button>
 
-          <button className="flex items-center gap-x-4 bg-primaryOrange  rounded-lg px-4 py-3">
+          <button onClick={()=>setShowProductPopup(!showProductPopup)} className="flex items-center gap-x-4 bg-primaryOrange  rounded-lg px-4 py-3">
             <img src="/assets/Icons/plusWhite.svg" className="w-5" />
             <p className="text-white font-semibold">New Add Products</p>
           </button>
         </div>
       </div>
-
+      {showProductPopup && <Popup close={handleCancel} next={handleNext} />}
+      {showCreatedPopup && <Createdpopup close={() => setShowCreatedPopup(false)} />}
       {/* Quick Access */}
 
       <div className="flex justify-start items-start gap-y-3 flex-col w-full">
