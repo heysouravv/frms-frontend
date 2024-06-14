@@ -33,9 +33,23 @@ const page = () => {
     setShowProductPopup(false);
     setShowCreatedPopup(true);
   };
+  const Overlay = () => {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+overflow:"hidden",
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        zIndex: 10 // Ensure this is below your popup z-index but above everything else
+      }}></div>
+    );
+  };
   return (
     // Main Div
-    <div className={`${showProductPopup ? "overflow-hidden  " :"overflow-auto"}   p-8 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
+    <div className={`overflow-hidden   p-8 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
       {/* Breadcrumb */}
       <div className="flex justify-start items-center gap-x-5">
         <img src="/assets/Icons/HomeGray.svg" className="w-5" />
@@ -46,8 +60,8 @@ const page = () => {
           Inventory
         </p>
       </div>
-
-      /* Inventory Management */
+      {(showProductPopup || showCreatedPopup) && <Overlay />}
+       {/* Inventory Management  */}
       <div className="flex justify-between  items-center w-full">
         <div>
           <p className="font-semibold lg:text-2xl text-[#101828]">

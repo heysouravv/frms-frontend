@@ -23,7 +23,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.className} `} >
+      <body className={`${inter.className}  overflow-x-hidden `} >
         <div className='lg:hidden flex justify-center items-center bg-white h-screen'>
           <p className='text-black font-semibold'>Please open it in desktop only.</p>
         </div>
