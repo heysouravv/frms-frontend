@@ -19,7 +19,7 @@ const page = () => {
 
   return (
     // Main Div
-    <div className="p-8 lg:flex sm:hidden justify-start flex-col gap-y-3 items-start w-full">
+    <div className="p-8 flex justify-start flex-col gap-y-3 items-start w-full">
       {/* Breadcrumb */}
       <div className="flex justify-start items-center gap-x-5">
         <img src="/assets/Icons/HomeGray.svg" className="w-5" />

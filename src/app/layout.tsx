@@ -17,37 +17,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [windowWidth, setWindowWidth] = useState<number>(0);
-
-  useEffect(() => {
-    // Function to update state with window width
-    const updateWindowWidth = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    // Update width on mount
-    updateWindowWidth();
-
-    // Add event listener for window resize
-    window.addEventListener('resize', updateWindowWidth);
-
-    // Cleanup event listener
-    return () => window.removeEventListener('resize', updateWindowWidth);
-  }, []);
 
   // Conditionally render based on window width
-  if (windowWidth > 1024) { // Assuming tablet breakpoint at 1024px
-    return (
-      <div className='flex justify-center items-center h-screen bg-white'>
-        Please open this application in a Desktop browser for the best experience.
-      </div>
-    );
-  }
+
 
   return (
     <html lang="en">
       <body className={`${inter.className} `} >
-        <div className='flex h-auto overflow-x-hidden'>
+        <div className='lg:hidden flex justify-center items-center bg-white h-screen'>
+          <p className='text-black font-semibold'>Please open it in desktop only.</p>
+        </div>
+        <div className='lg:flex hidden h-full overflow-x-hidden '>
           <SideBar/>
           {children}
         </div>

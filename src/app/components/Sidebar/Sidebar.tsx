@@ -14,7 +14,7 @@ const SideBar: FC<SideBarProps> = ({ className }) => {
   const [open, setOpen] = useState(true);
   const [subMenu, setsubMenu] = useState(false);
   const router = useRouter();
-  const isAdminRoute = usePathname().startsWith("/admin");
+const pathname = usePathname();
 
 const About =[
     {
@@ -47,35 +47,13 @@ const support = [
   }
 ]
 
-  const Menus = isAdminRoute
-    ? [
-        {
-          title: "Dashboard",
-          img: "/Icons/dashboard.svg",
-          path: "/admin",
-        },
-        {
-          title: "Create Client",
-          img: "/Icons/Job.svg",
-          path: "/admin/createClient",
-        },
-        {
-          title: "Master Videos",
-          img: "/Icons/Play.svg",
-          path: "/admin/mastervideos",
-        },
-        {
-          title: "Add Trades",
-          img: "/Icons/settings.svg",
-          path: "/admin/settings",
-        },
-        // Add admin-specific sidebar links here
-      ]
-    : [
-        { title: "Dashboard", img: "/assets/Icons/dashboard.svg", path: "/" },
+  const Menus =  [
+        { title: "Dashboard", selectedImage:"",img: "/assets/Icons/dashboard.svg",arrow:false, path: "/" },
         {
           title: "Team",
           img: "/assets/Icons/Team.svg",
+          selectedImage:"",
+          arrow:true,
           path: "/jobs",
           subMenu: true,
           subMenuItems: [
@@ -88,11 +66,15 @@ const support = [
         {
           title: "Finance",
           img: "/assets/Icons/Finance.svg",
+          selectedImage:"",
+          arrow:true,
           path: "/mastervideos",
         },
         {
           title: "Inventory",
           img: "/assets/Icons/InventoryGray.svg",
+          arrow:true,
+          selectedImage:"/assets/Icons/OrangeIneventory.svg",
           path: "/Inventory",
         },
 
@@ -102,7 +84,7 @@ const support = [
     <div
       className={`${
         open ? "w-96" : "w-24"
-      } duration-500 ${className}  lg:flex flex-col hidden lg:h-screen bg-white  border-[#D0D5DD]  border-r  `}
+      } duration-500 ${className} hidden lg:flex flex-col h-screen bg-white  border-[#D0D5DD]  border-r  `}
     >
       <div className="flex justify-start w-full items-start px-6 pt-8">
         {open ? (
@@ -121,9 +103,9 @@ const support = [
               <div className="">
                 <p className="rounded-md text-black bg-[#0000000D] py-1 ml-4 px-2 text-sm  font-medium">Basic</p>
               </div>
-      <div>
+              <div>
 
-      </div>
+              </div>
             </div>
           </div>
         ) : (
@@ -132,100 +114,81 @@ const support = [
       </div>
 
 
-<div className="flex flex-col w-full justify-between h-full items-start">
-<div className="w-full">
-      <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-0">
-        {Menus.map((menu, id) => {
-          return (
-            <React.Fragment key={id}>
-              <li
-                className="text-[#344054] submenu-trigger flex items-center gap-x-4 cursor-pointer font-medium p-2 hover:text-white hover:bg-[#FF7645] rounded-md"
-                key={id}
-              >
-                <span className="text-2xl block float-left submenu-trigger hover:text-white">
-                  <Image src={menu.img} width={20} height={20} alt={menu.img} />
-                </span>
+      <div className="flex flex-col w-full justify-between h-full items-start">
+        <div className="w-full">
+          <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-0">
+            {Menus.map((menu, id) => {
+              return (
+                <React.Fragment key={id}>
+                  <li
+                    className={`text-[#344054] submenu-trigger justify-between w-full flex items-center gap-x-4 cursor-pointer font-medium p-2 hover:text-white hover:bg-[#FFF1EB] rounded-md ${pathname === "/Inventory" && menu.title === "Inventory"  ? "bg-[#FFF1EB] text-white" : ""}`}
+                    key={id}
+                  >
+                    <div className="flex items-center gap-x-4">
+                    <span className="text-2xl block float-left submenu-trigger hover:text-white">
+                      <Image src={`${menu.title === "Inventory" ? menu.selectedImage : menu.img}`} width={20} height={20} alt={menu.img}  />
+                    </span>
 
-                <Link href={menu.path}>
-                  <span className={`${!open && "hidden"}`}> {menu.title}</span>
-                </Link>
-                {menu.subMenu && open && (
-                  <p
-                    className=""
-                    onClick={() => {
-                      setsubMenu(!subMenu);
-                    }}
-                  ></p>
-                )}
-              </li>
+                    <Link href={menu.path}>
+                      <span className={`${!open && "hidden"} font-semibold ${menu.title === "Inventory"  ?"text-[#FE4F00]" :"text-[#344054]"}`}> {menu.title}</span>
+                    </Link>
+                    </div>
+                    {menu.arrow && (
+                      <img src="/assets/Icons/rightArrowGray.svg" className="" />
+                    )}
+                   
+                  </li>
+                </React.Fragment>
+              );
+            })}
+          </ul>
+          <hr className="border border-[#EAECF0] " />
+          <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-2">
+            <p className="font-semibold">About ERP</p>
+            {About.map((menu, id) => {
+              return (
+                <React.Fragment key={id}>
+                  <li
+                    className={`text-[#344054] flex items-center gap-x-4 cursor-pointer font-medium p-2 hover:text-white hover:bg-[#FF7645] rounded-md `}
+                    key={id}
+                  >
+                    <span className="text-2xl block float-left hover:text-white">
+                      <Image src={menu.img} width={20} height={20} alt={menu.img} />
+                    </span>
 
-              {menu.subMenu && subMenu && open && (
-                <ul>
-                  {menu.subMenuItems.map((items, ind) => {
-                    return (
-                      <li
-                        className="text-gray-900 flex items-center gap-x-4 cursor-pointer px-4 py-4 ml-12 mr-4 hover:text-purple-800  border-l-1 border-gray-400 border-solid"
-                        key={ind}
-                        style={{ borderWidth: "0px 0px 0px 1px" }}
-                      >
-                        <span className="text-2xl block float-left">@</span>
-                        <span>{items.title}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </ul>
-      <hr className="border border-[#EAECF0] " />
-      <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-2">
-        <p className="font-semibold">About ERP</p>
-      {About.map((menu, id) => {
-          return (
-            <React.Fragment key={id}>
-              <li
-                className="text-[#344054] flex items-center gap-x-4 cursor-pointer font-medium p-2 hover:text-white hover:bg-[#FF7645] rounded-md"
-                key={id}
-              >
-                <span className="text-2xl block float-left hover:text-white">
-                  <Image src={menu.img} width={20} height={20} alt={menu.img} />
-                </span>
+                    <Link href={menu.path}>
+                      <span className={`${!open && "hidden"} font-semibold`}> {menu.title}</span>
+                    </Link>
+                  </li>
+                </React.Fragment>
+              );
+            })}
+          </ul>
+        </div>
 
-                <Link href={menu.path}>
-                  <span className={`${!open && "hidden"}`}> {menu.title}</span>
-                </Link>
-              </li>
-      </React.Fragment>
-          );
-        })}
-      </ul>
+        <div className="w-full border-t border-[#EAECF0]">
+          <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-2">
+            {support.map((menu, id) => {
+              return (
+                <React.Fragment key={id}>
+                  <li
+                    className={`text-[#344054] flex items-center gap-x-4 cursor-pointer font-medium p-2 hover:text-white hover:bg-[#FF7645] rounded-md `}
+                    key={id}
+                  >
+                    <span className="text-2xl block float-left hover:text-white">
+                      <Image src={menu.img} width={20} height={20} alt={menu.img} />
+                    </span>
+
+                    <Link href={menu.path}>
+                      <span className={`${!open && "hidden"} font-semibold`}> {menu.title}</span>
+                    </Link>
+                  </li>
+                </React.Fragment>
+              );
+            })}
+          </ul>
+        </div>
       </div>
-
-      <div className="w-full border-t border-[#EAECF0]">
-      <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-2">
-      {support.map((menu, id) => {
-          return (
-            <React.Fragment key={id}>
-              <li
-                className="text-[#344054] flex items-center gap-x-4 cursor-pointer font-medium p-2 hover:text-white hover:bg-[#FF7645] rounded-md"
-                key={id}
-              >
-                <span className="text-2xl block float-left hover:text-white">
-                  <Image src={menu.img} width={20} height={20} alt={menu.img} />
-                </span>
-
-                <Link href={menu.path}>
-                  <span className={`${!open && "hidden"}`}> {menu.title}</span>
-                </Link>
-              </li>
-      </React.Fragment>
-          );
-        })}
-      </ul>
-  </div>
-</div>
     </div>
   );
 };

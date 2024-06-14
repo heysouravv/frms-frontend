@@ -89,30 +89,7 @@ const products = [
     saleRate: "A",
     taxPerc: "A",
   },
-  {
-    id: "PRD0045",
-    name: "Product Name",
-    hsnCode: "HSN001",
-    type: "A",
-    minOrder: "A",
-    maxOrder: "A",
-    reorderLevel: "A",
-    purchaseRate: "A",
-    saleRate: "A",
-    taxPerc: "A",
-  },
-  {
-    id: "PRD0045",
-    name: "Product Name",
-    hsnCode: "HSN001",
-    type: "A",
-    minOrder: "A",
-    maxOrder: "A",
-    reorderLevel: "A",
-    purchaseRate: "A",
-    saleRate: "A",
-    taxPerc: "A",
-  },
+
 
   // Add more products as needed
 ];
@@ -143,7 +120,7 @@ const TableHeader = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Table = () => (
-  <div className="w-full  bg-white shadow-sm border-t border-r border-l border-b-0 border-b-[#D0D5DD] rounded-t-lg">
+  <div className="w-full  bg-white shadow-sm border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
     <div className="flex justify-between bg-white  px-5 py-5 rounded-lg rounded-b-none  border-b border-b-[#D0D5DD]  items-center w-full ">
       {/* All products */}
       <div>
