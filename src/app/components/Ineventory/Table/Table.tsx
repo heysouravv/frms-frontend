@@ -1,3 +1,4 @@
+
 import React from "react";
 
 // Consider extracting SVGs into separate components if they are reused across the application.
@@ -94,6 +95,8 @@ const products = [
   // Add more products as needed
 ];
 
+
+
 const TableRow = ({ product }: TableRowProps) => (
   <tr className="hover:bg-gray-100 border-t border-[#EAECF0] p-3">
     <td className="px-4 py-4 font-medium flex items-center gap-x-3">
@@ -119,12 +122,12 @@ const TableHeader = ({ children }: { children: React.ReactNode }) => (
     </th>
 );
 
-const Table = () => (
-  <div className="w-full  bg-white shadow-sm border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
+const Table = ({title}: {title: string}) => (
+  <div className="w-full  bg-white shadow-lg border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
     <div className="flex justify-between bg-white  px-5 py-5 rounded-lg rounded-b-none  border-b border-b-[#D0D5DD]  items-center w-full ">
       {/* All products */}
       <div>
-        <p className="text-black font-semibold text-lg">All Products</p>
+        <p className="text-black font-semibold text-lg">{title}</p>
       </div>
 
       {/* Filter, dates and search */}

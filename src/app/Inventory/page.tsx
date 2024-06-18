@@ -5,6 +5,7 @@ import Popup from "../components/Ineventory/Popup/Popup";
 import Createdpopup from "../components/Ineventory/Popup/CreatedPopup";
 
 
+
 const page = () => {
   const productDetails = [
     {
@@ -48,7 +49,8 @@ overflow:"hidden",
     );
   };
   return (
-    // Main Div
+
+// Main DIv
     <div className={`overflow-hidden   p-8 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
       {/* Breadcrumb */}
       <div className="flex justify-start items-center gap-x-5">
@@ -56,7 +58,7 @@ overflow:"hidden",
         <img src="/assets/Icons/rightArrowLightGray.svg" className="w-2" />
         <p className="text-sm font-medium text-[#475467]">Dashboard</p>
         <img src="/assets/Icons/rightArrowLightGray.svg" className="w-2" />
-        <p className="font-primaryOrange px-2 py-2 font-medium rounded-md bg-[#FFF1EB]">
+        <p className="font-primaryOrange px-2 text-sm py-2 font-medium rounded-md bg-[#FFF1EB]">
           Inventory
         </p>
       </div>
@@ -110,7 +112,7 @@ overflow:"hidden",
             </div>
           ))}
         </div>
-        <Table />
+        <Table title="All Products" />
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Createdpopup from "./CreatedPopup";
 
 const Dropdown = ({
   options,
@@ -111,7 +110,7 @@ const Popup = ({ close,next }: PopupProps) => {
               Create New Product
             </h3>
 
-            <button
+            <button 
               type="button"
               onClick={close}
               className="text-gray-400 bg-transparent   rounded-lg text-sm  ms-auto inline-flex justify-center items-center "
