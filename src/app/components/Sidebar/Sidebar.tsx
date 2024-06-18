@@ -9,6 +9,11 @@ interface SideBarProps {
   className?: string;
 }
 
+interface MenuItem {
+  title: string;
+  path: string; // Remove the optional operator from path
+}
+
 const SideBar: FC<SideBarProps> = ({ className }) => {
   const [open, setOpen] = useState(true);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
@@ -57,7 +62,15 @@ const support = [
   }
 ]
 
-  const Menus =  [
+  const Menus : Array<{
+    title: string;
+    img: string;
+    selectedImage: string;
+    arrow: boolean;
+    path: string;
+    subMenu?: boolean;
+    subMenuItems?: MenuItem[]; // Use the MenuItem interface here
+  }> =  [
     { title: "Dashboard", selectedImage:"",img: "/assets/Icons/dashboard.svg",arrow:false, path: "/" },
     {
       title: "Team",
@@ -67,10 +80,10 @@ const support = [
       path: "/jobs",
       subMenu: true,
       subMenuItems: [
-        { title: "Members" },
-        { title: "Leads" },
-        { title: "Staff Members" },
-        { title: "Migration Assistance" },
+        { title: "Members",path:"" },
+        { title: "Leads",path:"" },
+        { title: "Staff Members",path:"" },
+        { title: "Migration Assistance",path:"" },
       ],
     },
     {
@@ -119,14 +132,14 @@ const handleMenuClick = (menu: { subMenu?: boolean; title: string; }) => {
             <div className="inline-flex relative justify-between max-w-2xl bg-[#F8F8F8] border-2 w-full border-[#D0D5DD] rounded-md px-3 py-4 r">
             
               <div className="flex items-center gap-x-2">
-                <img src="./assets/Icons/Aciahea.svg" className="w-6 h-6" />
-                <p className="text-black font-semibold lg:text-lg">
+                <img src="/assets/Icons/Aciahea.svg" className="w-3 lg:w-6 h-6" />
+                <p className="text-black text-sm font-semibold lg:text-lg">
                   Achaia Studio
                 </p>
               </div>
 
-       <div className="bg-[#0000000D] absolute right-3 top-3 px-4 py-2 w-auto rounded-md">
-                <p className="text-black  text-sm  font-medium">Basic</p>
+       <div className="bg-[#0000000D] absolute right-3 top-3 lg:px-4 px-0 py-1 lg:py-2 w-auto rounded-md">
+                <p className="text-black text-xs lg:text-sm  font-medium">Basic</p>
        </div>
               
             </div>
@@ -166,7 +179,7 @@ const handleMenuClick = (menu: { subMenu?: boolean; title: string; }) => {
                   </li>
                   {menu.subMenu && openSubMenu === menu.title && (
                     <ul className="flex flex-col gap-y-0 py-2">
-                      {menu.subMenuItems.map((subMenu, id) => {
+                      {menu.subMenuItems?.map((subMenu, id) => {
                           return (
                           <li
                             className={`text-[#344054] ${currentPathname ===  "/Inventory/productDetails"  && subMenu.title === "Product Rate Details" ? "bg-[#FFF1EB] text-[#FE4F00]" :"  bg-transparent text-black"} hover:text-[#FE4F00] flex items-center gap-x-4 cursor-pointer font-medium px-11 py-2  hover:bg-[#FFF1EB] rounded-md`}
