@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState, FC, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-
+import Cookies from "js-cookie";
 interface SideBarProps {
   className?: string;
 }
@@ -117,7 +117,11 @@ const handleMenuClick = (menu: { subMenu?: boolean; title: string; }) => {
     setOpenSubMenu(null); // Close subMenu if a menu item without a subMenu is clicked
   }
 };
-
+const router = useRouter();
+const handleLogout = () => {
+  Cookies.remove("token");
+  router.push("/signin");
+}
   return (
     <div
       className={`${
@@ -156,6 +160,7 @@ const handleMenuClick = (menu: { subMenu?: boolean; title: string; }) => {
             {Menus.map((menu, id) => {
               return (
                 <React.Fragment key={id}>
+                  <Link href={menu.path} >
                   <li
                     className={`text-[#344054] submenu-trigger justify-between w-full flex items-center gap-x-4 cursor-pointer font-medium p-2 hover:text-white hover:bg-[#FFF1EB] rounded-md ${setColor && menu.title === "Inventory"  ? "bg-[#FFF1EB] text-white" : ""}`}
                     key={id}
@@ -169,21 +174,20 @@ const handleMenuClick = (menu: { subMenu?: boolean; title: string; }) => {
                         )}
                       </span>
 
-                      <Link href={menu.path}>
                         <span className={`${!open && "hidden"} font-semibold ${setColor && menu.title === "Inventory" ? "text-[#FE4F00]" : "text-[#344054]"}`}>{menu.title}</span>
-                      </Link>
                     </div>
                     {menu.arrow && (
                       <img src="/assets/Icons/rightArrowGray.svg" className={`${openSubMenu === menu.title ? "rotate-90" : ""}`} onClick={() => handleMenuClick(menu)} />
                     )}
                   </li>
+                    </Link>
                   {menu.subMenu && openSubMenu === menu.title && (
                     <ul className="flex flex-col gap-y-0 py-2">
                       {menu.subMenuItems?.map((subMenu, id) => {
-                          return (
+                        return (
                           <li
-                            className={`text-[#344054] ${currentPathname ===  "/Inventory/productDetails"  && subMenu.title === "Product Rate Details" ? "bg-[#FFF1EB] text-[#FE4F00]" :"  bg-transparent text-black"} hover:text-[#FE4F00] flex items-center gap-x-4 cursor-pointer font-medium px-11 py-2  hover:bg-[#FFF1EB] rounded-md`}
-                            key={id}
+                          className={`text-[#344054] ${currentPathname ===  "/Inventory/productDetails"  && subMenu.title === "Product Rate Details" ? "bg-[#FFF1EB] text-[#FE4F00]" :"  bg-transparent text-black"} hover:text-[#FE4F00] flex items-center gap-x-4 cursor-pointer font-medium px-11 py-2  hover:bg-[#FFF1EB] rounded-md`}
+                          key={id}
                           >
 
                             <Link href={subMenu.path}>
@@ -230,6 +234,7 @@ const handleMenuClick = (menu: { subMenu?: boolean; title: string; }) => {
                   <li
                     className={`text-[#344054] flex items-center gap-x-4 cursor-pointer font-medium p-2 hover:text-white hover:bg-[#FF7645] rounded-md `}
                     key={id}
+                    onClick={menu.title === "Logout" ? handleLogout : () => {}}
                   >
                     <span className="text-2xl block float-left hover:text-white">
                       <Image src={menu.img} width={20} height={20} alt={menu.img} />

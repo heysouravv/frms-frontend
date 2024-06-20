@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
+import { fetchData } from "@/app/utils/api";
 // Consider extracting SVGs into separate components if they are reused across the application.
 interface TableRowProps {
   product: {
@@ -89,37 +90,35 @@ const TableHeader = ({ children }: { children: React.ReactNode }) => (
     </th>
 );
 
-const Table = ({title}: {title: string}) => {
+const Table = ({title,productListUpdated}: {title: string;productListUpdated:boolean}) => {
   const [products, setProducts] = useState<TableRowProps["product"][]>([]);
 const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    const token = Cookies.get("token");
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://100.28.40.109:8000/products/', {
-       method:"GET",
-          headers: {
-            'Authorization':`Bearer ${token}`, // Replace YOUR_TOKEN_HERE with your actual token
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log(data,"this is data");
-        setProducts(data);
-        console.log(products,"This is setProducts");
-      } catch (error) {
-        console.error('There was a problem with your fetch operation:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-  
-    fetchData();
-  }, []);  
+ 
+// For Pagination
+const itemsPerPage = 5;
+const [currentPage, setCurrentPage] = useState(1);
+const data: string | any[] = []; // Define the 'data' variable and provide it with a value
+const totalPages = Math.ceil(data.length / itemsPerPage);
+
+const startIndex = (currentPage - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
+const currentData = data.slice(startIndex, endIndex);
+
+const goToNextPage = () => setCurrentPage((page) => Math.min(page + 1, totalPages));
+const goToPreviousPage = () => setCurrentPage((page) => Math.max(page - 1, 1));
+const goToFirstPage = () => setCurrentPage(1);
+const goToLastPage = () => setCurrentPage(totalPages);
+
+useEffect(() => {
+    fetchData(setProducts, setIsLoading).then(() => {
+    }).catch((error) => {
+      console.error('Error fetching data:', error);
+    });
+  }, [productListUpdated]);  
+
+
   return(
-  <div className="w-full  bg-white shadow-lg border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
+  <div className="w-full h-full bg-white shadow-lg border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
     <div className="flex justify-between bg-white  px-5 py-5 rounded-lg rounded-b-none  border-b border-b-[#D0D5DD]  items-center w-full ">
       {/* All products */}
       <div>
@@ -166,7 +165,7 @@ const [isLoading, setIsLoading] = useState(true);
         </div>
       </div>
     </div>
-    <div className="relative w-full overflow-auto bg-white custom-scrollbar">
+    <div className="relative w-full overflow-auto bg-white custom-scrollbar lg:h-[calc(100%-160px)] lg:overflow-y-hidden">
       <table className="caption-bottom text-sm overflow-scroll h-[calc(100%-200px)] lg:w-[calc(100%+100px)] custom-scrollbar">
         <thead className="[&_tr]:border-b w-full">
           <tr className="border-b bg-[#F9FAFB] transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
@@ -199,10 +198,10 @@ const [isLoading, setIsLoading] = useState(true);
       </table>
     </div>
         <div className="w-full  flex justify-between items-center p-4">
-<p>Page 1 of 10</p>
+<p>  Page {currentPage} of {totalPages}</p>
 <div className="flex items-center gap-x-4">
-<p className="px-4 py-2 border border-[#D0D5DD] text-[#344054] rounded-md">Previous</p>
-<p className="px-4 py-2 border border-[#D0D5DD] text-[#344054]  rounded-md" >Next</p>
+<p className="px-4 py-2 border border-[#D0D5DD] text-[#344054] rounded-md" onClick={goToNextPage}>Previous</p>
+<p className="px-4 py-2 border border-[#D0D5DD] text-[#344054]  rounded-md" onClick={goToLastPage} >Next</p>
 </div>
         </div>
   </div>

@@ -36,7 +36,7 @@ console.log(pathname);
         <div className='lg:hidden md:block flex justify-center items-center bg-white h-screen'>
           <p className='text-black font-semibold'>Please open it in desktop only.</p>
         </div>
-        <div className='lg:flex hidden h-full overflow-x-hidden '>
+        <div className='lg:flex hidden h-screen overflow-y-scroll no-scrollbar '>
         {!pathname && <SideBar/> } 
           {children}
         </div>

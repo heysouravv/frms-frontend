@@ -25,6 +25,11 @@ const page = () => {
 
   const [showProductPopup, setShowProductPopup] = useState(false);
   const [showCreatedPopup, setShowCreatedPopup] = useState(false);
+  const [productListUpdated, setProductListUpdated] = useState(false);
+
+  const handleProductUpdate = () => {
+    setProductListUpdated(prev => !prev); // Toggle to trigger useEffect in Table
+  };
 
   const handleCancel = () => {
     setShowProductPopup(false);
@@ -51,7 +56,7 @@ overflow:"hidden",
   return (
 
 // Main DIv
-    <div className={`overflow-hidden   p-8 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
+    <div className={` no-scrollbar   p-4 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
       {/* Breadcrumb */}
       <div className="flex justify-start items-center gap-x-5">
         <img src="/assets/Icons/HomeGray.svg" className="w-5" />
@@ -83,7 +88,7 @@ overflow:"hidden",
           </button>
         </div>
       </div>
-      {showProductPopup && <Popup close={handleCancel} next={handleNext} />}
+      {showProductPopup && <Popup close={handleCancel} next={handleNext} onProductCreated={handleProductUpdate} />}
       {showCreatedPopup && <Createdpopup close={() => setShowCreatedPopup(false)} />}
       {/* Quick Access */}
 
@@ -112,7 +117,7 @@ overflow:"hidden",
             </div>
           ))}
         </div>
-        <Table title="All Products" />
+        <Table title="All Products" productListUpdated={productListUpdated} />
       </div>
     </div>
   );

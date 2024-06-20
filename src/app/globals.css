@@ -63,3 +63,14 @@ body{
 .submenu-trigger:hover svg {
   fill: white;
 }
+
+/* Fade-in effect */
+.no-scrollbar {
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+.no-scrollbar::-webkit-scrollbar { /* WebKit */
+  width: 0;
+  height: 0;
+}

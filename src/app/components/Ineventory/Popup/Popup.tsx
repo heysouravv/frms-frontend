@@ -1,5 +1,6 @@
 import { makePostRequest } from "@/app/utils/api";
 import React, { useState } from "react";
+import Errormodal from "../../Modal/Errormodal";
 
 const Dropdown = ({
   options,
@@ -26,7 +27,7 @@ const Dropdown = ({
   return (
     <div className="flex flex-col w-full justify-start gap-2">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {e.preventDefault(),setIsOpen(!isOpen)}}
         className="px-4 py-2 w-full text-left relative border border-[#D0D5DD] text-black bg-white rounded"
       >
         {selectedOption}
@@ -82,9 +83,10 @@ const Dropdown = ({
 type PopupProps = {
   close: () => void;
   next: () => void;
+  onProductCreated: ()=>void;
 };
 
-const Popup = ({ close, next }: PopupProps) => {
+const Popup = ({ close, next,onProductCreated }: PopupProps) => {
   // Company
   const [selectedOption1, setSelectedOption1] = useState("Select");
   // HSN Code
@@ -122,7 +124,7 @@ const Popup = ({ close, next }: PopupProps) => {
   const [igstPercent, setIgstPercent] = useState("");
   const [sgstPercent, setSgstPercent] = useState("");
   const [cgstPercent, setCgstPercent] = useState("");
-
+const [checkError,setCheckError]=useState(false);
   const handleNextClick = async (e: { preventDefault: () => void; }) => {
     e.preventDefault()
     const body = {
@@ -142,20 +144,33 @@ const Popup = ({ close, next }: PopupProps) => {
 
     try {
       const response = await makePostRequest(body);
-      console.log(response); // Handle the response as needed
+        console.log(response); // Handle the response as needed
         next();
+        console.log('Product Created',onProductCreated);
+        onProductCreated();
+      if(response.status !== 200){
+        setCheckError(true);
+      }
+        
     } catch (error) {
+      setCheckError(true);
       console.error(error); // Handle the error as needed
     }
   };
 
+  setTimeout(() => {
+    setCheckError(false);
+  }, 3000);
+
   return (
     <div
-      id="crud-modal"
       tabIndex={-1}
       aria-hidden="true"
-      className={` overflow-hidden absolute translate-x-[20%] translate-y-[0%] z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
+      className={` overflow-hidden  absolute translate-x-[20%] translate-y-[0%] z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
     >
+      <div className="relative right-64">
+{checkError && <Errormodal label="Some Error Occured, please try again later" />}
+      </div>
       <div className={`relative  p-4 w-full max-w-xl max-h-full `}>
         <form className="relative bg-white rounded-lg shadow " onSubmit={handleNextClick}>
           <div className="flex items-center justify-between p-4 md:p-5  ">

@@ -26,7 +26,7 @@ const [showProductRatePopup, setShowProductRatePopup] = useState(false);
 
 
     return (
-    <div className={`overflow-hidden   p-8 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
+    <div className={`no-scrollbar p-4 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
 {/* Breadcrumb */}
 <Link href={'/Inventory'} className='cursor-pointer flex items-center gap-x-3 justify-start w-full'>
 <img src='/assets/Icons/leftOrange.svg' />
