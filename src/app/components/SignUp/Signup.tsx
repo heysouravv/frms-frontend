@@ -6,22 +6,19 @@ import Cookies from "js-cookie";
 import Successmodal from "../Modal/Successmodal";
 import Errormodal from "../Modal/Errormodal";
 import { ClipLoader } from "react-spinners";
-import {useRouter } from "next/navigation";
 
-export default function SignIn() {
+export default function signUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState("SignIn");
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const [flag, setFlag] = useState("");
-
-const router = useRouter();
 
   // Submitting the form
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +30,6 @@ const router = useRouter();
       if (response.access) {
         setIsLoading(false);
         setFlag("success");
-        router.push("/Inventory");
         console.log("Login successful:", response);
         Cookies.set("token", response.access);
       } else {

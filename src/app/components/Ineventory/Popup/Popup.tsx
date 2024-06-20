@@ -1,3 +1,4 @@
+import { makePostRequest } from "@/app/utils/api";
 import React, { useState } from "react";
 
 const Dropdown = ({
@@ -39,7 +40,7 @@ const Dropdown = ({
         />
       </button>
       {isOpen && (
-        <div className="absolute mt-2 top-16 w-48 bg-white shadow-lg rounded-lg">
+        <div className="absolute z-50 mt-2 top-12 w-48 bg-white shadow-lg rounded-lg">
           <ul className="py-1">
             {options.map(
               (
@@ -80,37 +81,89 @@ const Dropdown = ({
 
 type PopupProps = {
   close: () => void;
-  next:()=>void
+  next: () => void;
 };
 
-const Popup = ({ close,next }: PopupProps) => {
+const Popup = ({ close, next }: PopupProps) => {
+  // Company
   const [selectedOption1, setSelectedOption1] = useState("Select");
+  // HSN Code
   const [selectedOption2, setSelectedOption2] = useState("Select");
+  // Product Type
   const [selectedOption3, setSelectedOption3] = useState("Select");
+  // Rate Included Tax
   const [selectedOption4, setSelectedOption4] = useState("Select");
-
+  // Stockable Flag
+  const [selectedOption5, setSelectedOption5] = useState("Select");
+  // All the dropdown values
   const options1 = ["Option 1-1", "Option 1-2", "Option 1-3"];
-  const options2 = ["Option 2-1", "Option 2-2", "Option 2-3"];
+  const options2 = ["123456", "3456", "78910"];
   const options3 = ["Option 3-1", "Option 3-2", "Option 3-3"];
   const options4 = ["Option 3-1", "Option 3-2", "Option 3-3"];
+  const options5 = ["True", "False"];
 
+  // Min Order Level, Max Order Level, ReOrder Level
+  const [minOrderLevel, setMinOrderLevel] = useState("");
+  const [maxOrderLevel, setMaxOrderLevel] = useState("");
+  const [reOrderLevel, setReOrderLevel] = useState("");
+
+  // For Product Id and Product name
+  const [productId, setProductId] = useState("");
+  const [productName, setProductName] = useState("");
+
+  // For Damage Stock and Empty Stock
+  const [damageStock, setDamageStock] = useState("");
+  const [emptyStock, setEmptyStock] = useState("");
+
+  const [purchaseRate, setPurchaseRate] = useState("");
+  const [saleRate, setSaleRate] = useState("");
+  const [taxPercent, setTaxPercent] = useState("");
+  const [igstFlag, setIgstFlag] = useState("");
+  const [igstPercent, setIgstPercent] = useState("");
+  const [sgstPercent, setSgstPercent] = useState("");
+  const [cgstPercent, setCgstPercent] = useState("");
+
+  const handleNextClick = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault()
+    const body = {
+      name: productName,
+      hsn_code: selectedOption2,
+      min_order_level: minOrderLevel,
+      max_order_level: maxOrderLevel,
+      re_order_level: reOrderLevel,
+      purchase_rate: purchaseRate,
+      sale_rate: saleRate,
+      damage_stock: damageStock,
+      empty_stock: emptyStock,
+      stokable_flag: selectedOption5,
+      price: 120.0,
+      quantity: 50,
+    };
+
+    try {
+      const response = await makePostRequest(body);
+      console.log(response); // Handle the response as needed
+        next();
+    } catch (error) {
+      console.error(error); // Handle the error as needed
+    }
+  };
 
   return (
     <div
       id="crud-modal"
       tabIndex={-1}
       aria-hidden="true"
-      className={` overflow-hidden absolute translate-x-[20%] translate-y-[5%] z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
+      className={` overflow-hidden absolute translate-x-[20%] translate-y-[0%] z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
     >
-      
-      <div className={`relative  p-4 w-full max-w-2xl max-h-full `}>
-        <div className="relative bg-white rounded-lg shadow ">
+      <div className={`relative  p-4 w-full max-w-xl max-h-full `}>
+        <form className="relative bg-white rounded-lg shadow " onSubmit={handleNextClick}>
           <div className="flex items-center justify-between p-4 md:p-5  ">
             <h3 className="text-lg font-semibold text-[#101828]">
               Create New Product
             </h3>
 
-            <button 
+            <button
               type="button"
               onClick={close}
               className="text-gray-400 bg-transparent   rounded-lg text-sm  ms-auto inline-flex justify-center items-center "
@@ -120,7 +173,7 @@ const Popup = ({ close,next }: PopupProps) => {
               <span className="sr-only">Close modal</span>
             </button>
           </div>
-          <div className="w-full flex justify-start items-start flex-col gap-y-4 px-5">
+          <div className="w-full flex justify-start items-start flex-col gap-y-2 px-5">
             <div className="w-full flex justify-start gap-x-4 items-center flex-row">
               <div className="flex flex-col justify-start gap-2">
                 <label className="font-medium text-black  text-sm">
@@ -128,6 +181,8 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={productId}
+                  onChange={(e) => setProductId(e.target.value)}
                   placeholder="PRD0001"
                   className="p-2 placeholder:text-[#667085] font-medium text-black w-40 rounded-md bg-white border border-[#D0D5DD]"
                 />
@@ -138,6 +193,8 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
                   placeholder="Enter Name here"
                   className="placeholder:text-[#667085] font-medium text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
@@ -181,6 +238,9 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={minOrderLevel}
+                  required
+                  onChange={(e) => setMinOrderLevel(e.target.value)}
                   className="p-2 placeholder:text-[#667085] font-medium w-full text-black  rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -190,6 +250,9 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  required
+                  value={maxOrderLevel}
+                  onChange={(e) => setMaxOrderLevel(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -199,6 +262,9 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={reOrderLevel}
+                  required
+                  onChange={(e) => setReOrderLevel(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -211,6 +277,9 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={purchaseRate}
+                  required
+                  onChange={(e) => setPurchaseRate(e.target.value)}
                   className="p-2 placeholder:text-[#667085] font-medium w-full text-black  rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -220,6 +289,9 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={saleRate}
+                  required
+                  onChange={(e) => setSaleRate(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -227,6 +299,9 @@ const Popup = ({ close,next }: PopupProps) => {
                 <label className="font-medium text-black  text-sm">Tax %</label>
                 <input
                   type="text"
+                  value={taxPercent}
+                  required
+                  onChange={(e) => setTaxPercent(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -239,6 +314,8 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={igstFlag}
+                  onChange={(e) => setIgstFlag(e.target.value)}
                   className="p-2 placeholder:text-[#667085] font-medium w-full text-black  rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -248,6 +325,8 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={igstPercent}
+                  onChange={(e) => setIgstPercent(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -257,6 +336,8 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={sgstPercent}
+                  onChange={(e) => setSgstPercent(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -266,6 +347,8 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={cgstPercent}
+                  onChange={(e) => setCgstPercent(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -287,6 +370,8 @@ const Popup = ({ close,next }: PopupProps) => {
                   Damage Stock
                 </label>
                 <input
+                  value={damageStock}
+                  onChange={(e) => setDamageStock(e.target.value)}
                   type="text"
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
@@ -297,6 +382,8 @@ const Popup = ({ close,next }: PopupProps) => {
                 </label>
                 <input
                   type="text"
+                  value={emptyStock}
+                  onChange={(e) => setEmptyStock(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
               </div>
@@ -313,13 +400,14 @@ const Popup = ({ close,next }: PopupProps) => {
                   onSelect={setSelectedOption4}
                 />
               </div>
-              <div className="flex flex-col w-full justify-start gap-2">
+              <div className="flex flex-col relative w-full justify-start gap-2">
                 <label className="font-medium text-black  text-sm">
                   Stockable Flag<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
+                <Dropdown
+                  options={options5}
+                  selectedOption={selectedOption5}
+                  onSelect={setSelectedOption5}
                 />
               </div>
             </div>
@@ -332,16 +420,15 @@ const Popup = ({ close,next }: PopupProps) => {
               Cancel
             </button>
             <button
-onClick={next}
+        
               type="submit"
               className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]"
             >
               Next
             </button>
           </div>
-        </div>
+        </form>
       </div>
-
     </div>
   );
 };

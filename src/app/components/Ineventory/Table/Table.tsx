@@ -1,18 +1,19 @@
-
-import React from "react";
-
+'use client'
+import React, { useEffect, useState } from "react";
+import Cookies from 'js-cookie';
 // Consider extracting SVGs into separate components if they are reused across the application.
 interface TableRowProps {
   product: {
+    min_order_level: number;
+    max_order_level: number;
+    re_order_level: number;
+    purchase_rate: string;
+    sale_rate: string;
+    hsn_code: string;
     name: string;
-    id: string;
+    id: number;
     hsnCode: string;
     type: string;
-    minOrder: string;
-    maxOrder: string;
-    reorderLevel: string;
-    purchaseRate: string;
-    saleRate: string;
     taxPerc: string;
   };
 }
@@ -53,67 +54,33 @@ const SearchIcon = () => (
     <path d="m21 21-4.3-4.3"></path>
   </svg>
 );
-const products = [
-  {
-    id: "PRD0045",
-    name: "Product Name",
-    hsnCode: "HSN001",
-    type: "A",
-    minOrder: "A",
-    maxOrder: "A",
-    reorderLevel: "A",
-    purchaseRate: "A",
-    saleRate: "A",
-    taxPerc: "A",
-  },
-  {
-    id: "PRD0045",
-    name: "Product Name",
-    hsnCode: "HSN001",
-    type: "A",
-    minOrder: "A",
-    maxOrder: "A",
-    reorderLevel: "A",
-    purchaseRate: "A",
-    saleRate: "A",
-    taxPerc: "A",
-  },
-  {
-    id: "PRD0045",
-    name: "Product Name",
-    hsnCode: "HSN001",
-    type: "A",
-    minOrder: "A",
-    maxOrder: "A",
-    reorderLevel: "A",
-    purchaseRate: "A",
-    saleRate: "A",
-    taxPerc: "A",
-  },
-
-
-  // Add more products as needed
-];
 
 
 
-const TableRow = ({ product }: TableRowProps) => (
-  <tr className="hover:bg-gray-100 border-t border-[#EAECF0] p-3">
+
+
+
+const TableRow = ({ product }: TableRowProps) => {
+  
+  return (
+
+  <tr className="hover:bg-gray-100 border-t border-[#EAECF0] p-3" key={product.id}>
     <td className="px-4 py-4 font-medium flex items-center gap-x-3">
     <input type="checkbox" className="form-checkbox h-4 w-4 border border-[#D0D5DD] rounded-md  accent-[#FE4F00] "/>
       {product.name}
       </td>
     <td className="px-4 py-4 text-[#475467]">{product.id}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.hsnCode}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.type}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.minOrder}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.maxOrder}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.reorderLevel}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.purchaseRate}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.saleRate}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.taxPerc}</td>
+    <td className="px-4 py-4 text-[#475467]">{product.hsn_code}</td>
+    <td className="px-4 py-4 text-[#475467]">{product.name}</td>
+    <td className="px-4 py-4 text-[#475467]">{product.min_order_level}</td>
+    <td className="px-4 py-4 text-[#475467]">{product.max_order_level}</td>
+    <td className="px-4 py-4 text-[#475467]">{product.re_order_level}</td>
+    <td className="px-4 py-4 text-[#475467]">{product.purchase_rate}</td>
+    <td className="px-4 py-4 text-[#475467]">{product.sale_rate}</td>
+    {/* Dummy For Now */}
+    <td className="px-4 py-4 text-[#475467]">10%</td>
   </tr>
-);
+)};
 
 const TableHeader = ({ children }: { children: React.ReactNode }) => (
   <th className="h-12 px-4 text-[#475467]  text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">
@@ -122,7 +89,36 @@ const TableHeader = ({ children }: { children: React.ReactNode }) => (
     </th>
 );
 
-const Table = ({title}: {title: string}) => (
+const Table = ({title}: {title: string}) => {
+  const [products, setProducts] = useState<TableRowProps["product"][]>([]);
+const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://100.28.40.109:8000/products/', {
+       method:"GET",
+          headers: {
+            'Authorization':`Bearer ${token}`, // Replace YOUR_TOKEN_HERE with your actual token
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log(data,"this is data");
+        setProducts(data);
+        console.log(products,"This is setProducts");
+      } catch (error) {
+        console.error('There was a problem with your fetch operation:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);  
+  return(
   <div className="w-full  bg-white shadow-lg border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
     <div className="flex justify-between bg-white  px-5 py-5 rounded-lg rounded-b-none  border-b border-b-[#D0D5DD]  items-center w-full ">
       {/* All products */}
@@ -210,6 +206,6 @@ const Table = ({title}: {title: string}) => (
 </div>
         </div>
   </div>
-);
+)};
 
 export default Table;
