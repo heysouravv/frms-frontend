@@ -118,7 +118,7 @@ useEffect(() => {
 
 
   return(
-  <div className="w-full h-full bg-white shadow-lg border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
+  <div className="w-full  bg-white shadow-lg border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
     <div className="flex justify-between bg-white  px-5 py-5 rounded-lg rounded-b-none  border-b border-b-[#D0D5DD]  items-center w-full ">
       {/* All products */}
       <div>
@@ -165,7 +165,7 @@ useEffect(() => {
         </div>
       </div>
     </div>
-    <div className="relative w-full overflow-auto bg-white custom-scrollbar lg:h-[calc(100%-160px)] lg:overflow-y-hidden">
+    <div className="relative w-full overflow-auto bg-white custom-scrollbar ">
       <table className="caption-bottom text-sm overflow-scroll h-[calc(100%-200px)] lg:w-[calc(100%+100px)] custom-scrollbar">
         <thead className="[&_tr]:border-b w-full">
           <tr className="border-b bg-[#F9FAFB] transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
