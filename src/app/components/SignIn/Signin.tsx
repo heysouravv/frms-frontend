@@ -67,7 +67,7 @@ const router = useRouter();
   return (
     <>
       {flag === "success" && (
-        <Successmodal label="Login successful" close={() => setFlag("")} />
+        <Successmodal label="Login successful"  />
       )}
       {flag === "failure" && (
         <Errormodal label="Invalid username or password" />

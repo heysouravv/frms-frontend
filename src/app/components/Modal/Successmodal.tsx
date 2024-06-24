@@ -2,7 +2,6 @@ import React from 'react'
 
 interface SuccessmodalProps {
   label: string;
-
 }
 
 const Successmodal = ({label}: SuccessmodalProps) => {
@@ -11,6 +10,7 @@ const Successmodal = ({label}: SuccessmodalProps) => {
     <div className="p-4  rounded-md text-sm " >
       <span className="font-medium text-lg text-white">{label}</span> 
     </div>
+
     </div>
   )
 }
