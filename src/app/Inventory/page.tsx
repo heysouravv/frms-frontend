@@ -91,7 +91,7 @@ overflow:"hidden",
         <InventoryHeader titleLabel="Inventory and Stock Management" showProductPopup={showProductPopup} setShowProductPopup={setShowProductPopup} buttons={buttons} />
    
    
-      {showProductPopup && <Popup handleShowSuccessModal={()=>null} close={handleCancel} next={handleNext} onProductCreated={handleProductUpdate} />}
+      {showProductPopup && <Popup  close={handleCancel} next={handleNext} onProductCreated={handleProductUpdate} />}
       {showCreatedPopup && <Createdpopup close={() => setShowCreatedPopup(false)} />}
       {/* Quick Access */}
 

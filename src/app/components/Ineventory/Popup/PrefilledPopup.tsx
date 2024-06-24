@@ -89,7 +89,7 @@ const Dropdown = ({
 
 
 
-type PopupProps = {
+type PrefilledPopupProps = {
   product: 
     {
       id: string;
@@ -113,7 +113,7 @@ type PopupProps = {
 
 
 
-const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal }: PopupProps) => {
+const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal }: PrefilledPopupProps) => {
 
   // Company
   const [selectedOption1, setSelectedOption1] = useState("Select");

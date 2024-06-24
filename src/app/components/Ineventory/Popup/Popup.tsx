@@ -89,7 +89,7 @@ type PopupProps = {
   close: () => void;
   next: () => void;
   onProductCreated: ()=>void;
-  handleShowSuccessModal: () => void;
+
 };
 
 const Popup = ({ close, next,onProductCreated }: PopupProps) => {
