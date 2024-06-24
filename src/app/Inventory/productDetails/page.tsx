@@ -66,7 +66,7 @@ const buttons = [
 <InventoryHeader titleLabel="   Product Rate Details" showProductPopup={showProductRatePopup} setShowProductPopup={setShowProductRatePopup} buttons={buttons} />
 
       {showProductRatePopup && <NewProductRates close={()=>setShowProductRatePopup(false)} />}
-        <Table title="All Products Rate Details" productListUpdated={true} />
+        <Table title="All Products Rate Details" productUpdate={()=>undefined}  productListUpdated={true} />
         
     </div>
   )
