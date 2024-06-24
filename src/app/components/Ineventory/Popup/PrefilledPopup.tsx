@@ -1,7 +1,9 @@
-import { makePostRequest } from "@/app/utils/api";
-import React, { useState } from "react";
+import { makePostRequest, updateProduct } from "@/app/utils/api";
+import React, { useEffect, useState } from "react";
+
+import Successmodal from "../../Modal/Successmodal";
 import Errormodal from "../../Modal/Errormodal";
-import { motion, AnimatePresence } from 'framer-motion';
+
 const Dropdown = ({
   options,
   selectedOption = "",
@@ -23,14 +25,9 @@ const Dropdown = ({
   onSelect: (option: string) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { opacity: 1, scale: 1 },
-  };
+
   return (
-    <div 
-    
-    className="flex flex-col w-full justify-start gap-2">
+    <div className="flex flex-col w-full justify-start gap-2">
       <button
         onClick={(e) => {e.preventDefault(),setIsOpen(!isOpen)}}
         className="px-4 py-2 w-full text-left relative border border-[#D0D5DD] text-black bg-white rounded"
@@ -85,23 +82,94 @@ const Dropdown = ({
   );
 };
 
-type PopupProps = {
+
+type SuccessPopup = {
   close: () => void;
-  next: () => void;
-  onProductCreated: ()=>void;
 };
 
-const Popup = ({ close, next,onProductCreated }: PopupProps) => {
+export const SuccessPopup = ({ close }: SuccessPopup) => {
+      return (
+        <div className="flex bg-white max-w-sm shadow-md absolute w-full z-50 rounded-xl translate-x-full translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
+        <div className='flex items-end justify-end w-full '>
+        <img src='/assets/Icons/cross.svg' onClick={close} className='cursor-pointer' />
+ 
+        </div>
+          <div>
+             <img src="/assets/Icons/sucess.svg" className="w-20" />
+          </div>
+             <p className='font-semibold text-[#101828] text-xl'>Product updated successfully</p>
+             <p className='text-sm text-center text-[#475467] '>A product has been successfully updated and added to the product list.</p>
+             <button type='submit' onClick={close} className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]">
+                        Continue
+                    </button>
+             <button onClick={close} className='flex items-center justify-center gap-x-4  text-[#475467]'>
+                        <img src="/assets/Icons/leftArrow.svg" />
+                        Back to Inventory</button>     
+             </div>
+      );
+      
+  }
+
+  type ErrorProps = {
+    close: () => void;
+  };
+  
+  export const ErrorModal = ({ close }: ErrorProps) => {
+        return (
+          <div className="flex bg-white max-w-sm shadow-md absolute w-full z-50 rounded-xl translate-x-full translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
+          <div className='flex items-end justify-end w-full '>
+          <img src='/assets/Icons/cross.svg' onClick={close} className='cursor-pointer' />
+   
+          </div>
+            <div>
+               <img src="/assets/Icons/error.svg" className="w-20" />
+            </div>
+               <p className='font-semibold text-[#101828] text-xl'>Some Error Occured</p>
+               <p className='text-sm text-center text-[#475467] '>  Try to Relogin, or please try again later</p>
+               <button type='submit' onClick={close} className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]">
+                          Close
+                      </button>
+          
+               </div>
+        );
+        
+    }
+
+
+
+type PopupProps = {
+  product: 
+    {
+      id: string;
+      name: string;
+      hsn_code: string;
+      min_order_level: string;
+      max_order_level: string;
+      tax_percent: string;
+      re_order_level: string;
+      purchase_rate: string;
+      sale_rate: string;
+      damage_stock: string;
+      empty_stock: string;
+      stokable_flag: boolean;
+    }
+  ; 
+  close: () => void;
+  productUpdate:()=>void
+};
+
+const PrefilledPopup = ({ product,close,productUpdate }: PopupProps) => {
+
   // Company
   const [selectedOption1, setSelectedOption1] = useState("Select");
   // HSN Code
-  const [selectedOption2, setSelectedOption2] = useState("Select");
+  const [selectedOption2, setSelectedOption2] = useState(product?.hsn_code);
   // Product Type
   const [selectedOption3, setSelectedOption3] = useState("Select");
   // Rate Included Tax
   const [selectedOption4, setSelectedOption4] = useState("Select");
   // Stockable Flag
-  const [selectedOption5, setSelectedOption5] = useState("Select");
+  const [selectedOption5, setSelectedOption5] = useState(product?.stokable_flag ? "True" : "False");
   // All the dropdown values
   const options1 = ["Option 1-1", "Option 1-2", "Option 1-3"];
   const options2 = ["123456", "3456", "78910"];
@@ -110,84 +178,117 @@ const Popup = ({ close, next,onProductCreated }: PopupProps) => {
   const options5 = ["True", "False"];
 
   // Min Order Level, Max Order Level, ReOrder Level
-  const [minOrderLevel, setMinOrderLevel] = useState("");
-  const [maxOrderLevel, setMaxOrderLevel] = useState("");
-  const [reOrderLevel, setReOrderLevel] = useState("");
+  const [minOrderLevel, setMinOrderLevel] = useState(product?.max_order_level);
+  const [maxOrderLevel, setMaxOrderLevel] = useState(product?.min_order_level);
+  const [reOrderLevel, setReOrderLevel] = useState(product?.re_order_level);
 
   // For Product Id and Product name
-  const [productId, setProductId] = useState("");
-  const [productName, setProductName] = useState("");
+  const [productId, setProductId] = useState(product?.id);
+  const [productName, setProductName] = useState(product?.name);
 
   // For Damage Stock and Empty Stock
-  const [damageStock, setDamageStock] = useState("");
-  const [emptyStock, setEmptyStock] = useState("");
+  const [damageStock, setDamageStock] = useState(product?.damage_stock);
+  const [emptyStock, setEmptyStock] = useState(product?.empty_stock);
 
-  const [purchaseRate, setPurchaseRate] = useState("");
-  const [saleRate, setSaleRate] = useState("");
-  const [taxPercent, setTaxPercent] = useState("");
+  const [purchaseRate, setPurchaseRate] = useState(product?.purchase_rate);
+  const [saleRate, setSaleRate] = useState(product?.sale_rate);
+  const [taxPercent, setTaxPercent] = useState(product?.tax_percent);
   const [igstFlag, setIgstFlag] = useState("");
   const [igstPercent, setIgstPercent] = useState("");
   const [sgstPercent, setSgstPercent] = useState("");
   const [cgstPercent, setCgstPercent] = useState("");
-const [checkError,setCheckError]=useState(false);
+
+  // Check error
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+
+  const [productUpdateStatus,setProductUpdateStatus]=useState<boolean>(false)
+ 
+  const handleUpdateStatus = (isSuccessful: any) => {
+    if (isSuccessful) {
+      console.log("Product update was successful.");
+    } else {
+      console.error("Product update failed.");
+    }
+  };
+
+  
   const handleNextClick = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault()
+    e.preventDefault(); // Prevent the default form submit behavior
+
+    // Prepare the body for the POST request
     const body = {
       name: productName,
       hsn_code: selectedOption2,
       min_order_level: minOrderLevel,
       max_order_level: maxOrderLevel,
       re_order_level: reOrderLevel,
+      tax_percent: taxPercent,
       purchase_rate: purchaseRate,
       sale_rate: saleRate,
       damage_stock: damageStock,
       empty_stock: emptyStock,
       stokable_flag: selectedOption5,
-      price: 120.0,
-      quantity: 50,
+      price: 120.0, // Assuming static for the example
+      quantity: 50, // Assuming static for the example
     };
 
     try {
-      const response = await makePostRequest(body);
-        console.log(response); // Handle the response as needed
-        next();
-        console.log('Product Created',onProductCreated);
-        onProductCreated();
-      if(response.status !== 200){
-        setCheckError(true);
+      // Attempt to update the product
+      const response: Response = await updateProduct(productId, body, handleUpdateStatus);
+    
+      // Check if the update was successful
+    
+      if (response.status === 200) {
+        close() //Close the modal
+        // Handle success scenario
+    setShowSuccess(true);
+    console.log("Product update was successful.")
+        // For example, update UI or state to reflect the successful update
+        setProductUpdateStatus(true); // Assuming a state setter function exists
+        // Optionally, you might want to navigate the user to a different page or show a success message
+      } else {
+        setShowError(true);
+        console.log("Product update failed.")
+        setErrorMessage("Product update failed. Please try again."); // Assuming a state setter function exists
+        close() //Close the modal
+        // Handle error scenario
+        // This could involve setting an error state, displaying an error message, etc.
+        setProductUpdateStatus(false); // Assuming a state setter function exists
       }
-        
     } catch (error) {
-      setCheckError(true);
-      console.error(error); // Handle the error as needed
+      // Handle any errors that occurred during the update process
+      setShowError(true);
+      setErrorMessage("Product update failed. Please try again."); // Assuming a state setter function exists
+      close() //Close the modal
+      setProductUpdateStatus(false); // Assuming a state setter function exists
+      console.error(error); // Log the error
     }
   };
 
-  setTimeout(() => {
-    setCheckError(false);
-  }, 3000);
-  // For the basic fade in animation
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { opacity: 1, scale: 1 },
-  };
+
+
+  useEffect(() => {
+    console.log(productUpdateStatus,"this is product update status")
+  },[productUpdateStatus])
   return (
+
+    
     <div
-      tabIndex={-1}
-      aria-hidden="true"
-      className={` overflow-hidden  absolute translate-x-[20%] translate-y-[0%] z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
+    tabIndex={-1}
+    aria-hidden="true"
+    className={` overflow-hidden z-50 absolute   justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
     >
-      <motion.div
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
-      variants={modalVariants}
-      transition={{ duration: 0.3 }}
-      className="relative right-64">
-{checkError && <Errormodal label="Some Error Occured, please try again later" />}
-      </motion.div>
-      <div className={`relative  p-4 w-full max-w-xl max-h-full `}>
-        <form className="relative bg-white rounded-lg shadow " onSubmit={handleNextClick}>
+
+
+      <div className={`${productUpdateStatus ? "hidden" :""} relative right-64`}>
+      </div>
+      {showSuccess ? <SuccessPopup close={() => setShowSuccess(false)} /> : showError ? <ErrorModal close={()=>setShowError(false)} />  
+      :   
+
+        <form className="relative lg:translate-x-1/3 xl:translate-x-11/12 xl:max-w-xl 2xl:max-w-lg w-full lg:translate-y-5  xl:translate-y-5 bg-white rounded-lg shadow "  onSubmit={handleNextClick}>
           <div className="flex items-center justify-between p-4 md:p-5  ">
             <h3 className="text-lg font-semibold text-[#101828]">
               Create New Product
@@ -209,6 +310,7 @@ const [checkError,setCheckError]=useState(false);
                 <label className="font-medium text-black  text-sm">
                   Product Id<span className="text-red-600">*</span>
                 </label>
+              
                 <input
                   type="text"
                   value={productId}
@@ -216,11 +318,13 @@ const [checkError,setCheckError]=useState(false);
                   placeholder="PRD0001"
                   className="p-2 placeholder:text-[#667085] font-medium text-black w-40 rounded-md bg-white border border-[#D0D5DD]"
                 />
+              
               </div>
               <div className="flex flex-col w-full justify-start gap-2">
                 <label className="font-medium text-black  text-sm">
                   Product Name<span className="text-red-600">*</span>
                 </label>
+              
                 <input
                   type="text"
                   value={productName}
@@ -228,6 +332,7 @@ const [checkError,setCheckError]=useState(false);
                   placeholder="Enter Name here"
                   className="placeholder:text-[#667085] font-medium text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
+             
               </div>
             </div>
 
@@ -400,7 +505,7 @@ const [checkError,setCheckError]=useState(false);
                   Damage Stock
                 </label>
                 <input
-                  value={damageStock}
+                  value={product.damage_stock}
                   onChange={(e) => setDamageStock(e.target.value)}
                   type="text"
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
@@ -412,7 +517,7 @@ const [checkError,setCheckError]=useState(false);
                 </label>
                 <input
                   type="text"
-                  value={emptyStock}
+                  value={product.empty_stock}
                   onChange={(e) => setEmptyStock(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
@@ -458,9 +563,10 @@ const [checkError,setCheckError]=useState(false);
             </button>
           </div>
         </form>
-      </div>
+
+      }
     </div>
   );
 };
 
-export default Popup;
+export default PrefilledPopup;

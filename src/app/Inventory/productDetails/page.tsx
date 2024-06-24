@@ -1,4 +1,5 @@
 'use client'
+import InventoryHeader from '@/app/components/Header/InventoryHeader';
 import NewProductRates from '@/app/components/Ineventory/Popup/NewProductRates';
 
 import Table from '@/app/components/Ineventory/Table/Table';
@@ -24,7 +25,20 @@ overflow:"hidden",
 
 const [showProductRatePopup, setShowProductRatePopup] = useState(false);
 
-
+const buttons = [
+  {
+    iconPath: "/assets/Icons/importFileIcon.svg",
+    text: "Export CSV",
+    onClick:()=>console.log("Button Cicked"),
+    className: "bg-white border border-[#D0D5DD] rounded-lg px-4 py-3 text-[#344054]",
+  },
+  {
+    iconPath: "/assets/Icons/plusWhite.svg",
+    text: "Add New",
+    onClick:()=>setShowProductRatePopup(!showProductRatePopup),
+    className: "bg-primaryOrange rounded-lg px-4 py-3 text-white",
+  },
+];
     return (
     <div className={`no-scrollbar p-4 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
 {/* Breadcrumb */}
@@ -48,27 +62,11 @@ const [showProductRatePopup, setShowProductRatePopup] = useState(false);
       </div>
 {(showProductRatePopup) && <Overlay />}
              {/* Inventory Management  */}
-             <div className="flex justify-between  items-center w-full">
-        <div>
-          <p className="font-semibold lg:text-2xl text-[#101828]">
-          Product Rate Details
-          </p>
-        </div>
 
-        <div className="flex items-center gap-x-4">
-          <button className="flex items-center gap-x-4 bg-white border border-[#D0D5DD] rounded-lg px-4 py-3">
-            <img src="/assets/Icons/importFileIcon.svg" className="w-5" />
-            <p className="text-[#344054] font-semibold">Export CSV</p>
-          </button>
+<InventoryHeader titleLabel="   Product Rate Details" showProductPopup={showProductRatePopup} setShowProductPopup={setShowProductRatePopup} buttons={buttons} />
 
-          <button onClick={()=>setShowProductRatePopup(!showProductRatePopup)} className="flex items-center gap-x-4 bg-primaryOrange  rounded-lg px-4 py-3">
-            <img src="/assets/Icons/plusWhite.svg" className="w-5" />
-            <p className="text-white font-semibold">Add New</p>
-          </button>
-        </div>
-      </div>
       {showProductRatePopup && <NewProductRates close={()=>setShowProductRatePopup(false)} />}
-        <Table title="All Products Rate Details"/>
+        <Table title="All Products Rate Details" productListUpdated={true} />
         
     </div>
   )

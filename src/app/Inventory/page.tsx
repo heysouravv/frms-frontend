@@ -3,10 +3,16 @@ import React, { useState } from "react";
 import Table from "../components/Ineventory/Table/Table";
 import Popup from "../components/Ineventory/Popup/Popup";
 import Createdpopup from "../components/Ineventory/Popup/CreatedPopup";
+import InventoryHeader from "../components/Header/InventoryHeader";
 
 
 
 const page = () => {
+  const [showProductPopup, setShowProductPopup] = useState(false);
+  const [showCreatedPopup, setShowCreatedPopup] = useState(false);
+  const [productListUpdated, setProductListUpdated] = useState(false);
+
+
   const productDetails = [
     {
       title: "Product Rate Details",
@@ -22,10 +28,22 @@ const page = () => {
     },
   ];
 
+  // Header Buttons
+  const buttons = [
+    {
+      iconPath: "/assets/Icons/importFileIcon.svg",
+      text: "Import Products",
+      onClick:()=>console.log("Button Cicked"),
+      className: "bg-white border border-[#D0D5DD] rounded-lg px-4 py-3 text-[#344054]",
+    },
+    {
+      iconPath: "/assets/Icons/plusWhite.svg",
+      text: "New Add Products",
+      onClick: () => setShowProductPopup(!showProductPopup),
+      className: "bg-primaryOrange rounded-lg px-4 py-3 text-white",
+    },
+  ];
 
-  const [showProductPopup, setShowProductPopup] = useState(false);
-  const [showCreatedPopup, setShowCreatedPopup] = useState(false);
-  const [productListUpdated, setProductListUpdated] = useState(false);
 
   const handleProductUpdate = () => {
     setProductListUpdated(prev => !prev); // Toggle to trigger useEffect in Table
@@ -53,6 +71,7 @@ overflow:"hidden",
       }}></div>
     );
   };
+
   return (
 
 // Main DIv
@@ -69,25 +88,9 @@ overflow:"hidden",
       </div>
       {(showProductPopup || showCreatedPopup) && <Overlay />}
        {/* Inventory Management  */}
-      <div className="flex justify-between  items-center w-full">
-        <div>
-          <p className="font-semibold lg:text-2xl text-[#101828]">
-            Inventory and Stock Management
-          </p>
-        </div>
-
-        <div className="flex items-center gap-x-4">
-          <button className="flex items-center gap-x-4 bg-white border border-[#D0D5DD] rounded-lg px-4 py-3">
-            <img src="/assets/Icons/importFileIcon.svg" className="w-5" />
-            <p className="text-[#344054] font-semibold">Import Products</p>
-          </button>
-
-          <button onClick={()=>setShowProductPopup(!showProductPopup)} className="flex items-center gap-x-4 bg-primaryOrange  rounded-lg px-4 py-3">
-            <img src="/assets/Icons/plusWhite.svg" className="w-5" />
-            <p className="text-white font-semibold">New Add Products</p>
-          </button>
-        </div>
-      </div>
+        <InventoryHeader titleLabel="Inventory and Stock Management" showProductPopup={showProductPopup} setShowProductPopup={setShowProductPopup} buttons={buttons} />
+   
+   
       {showProductPopup && <Popup close={handleCancel} next={handleNext} onProductCreated={handleProductUpdate} />}
       {showCreatedPopup && <Createdpopup close={() => setShowCreatedPopup(false)} />}
       {/* Quick Access */}
@@ -117,7 +120,7 @@ overflow:"hidden",
             </div>
           ))}
         </div>
-        <Table title="All Products" productListUpdated={productListUpdated} />
+        <Table title="All Products" productListUpdated={productListUpdated} productUpdate={handleProductUpdate} />
       </div>
     </div>
   );

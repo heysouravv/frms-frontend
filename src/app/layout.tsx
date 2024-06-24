@@ -28,7 +28,7 @@ export default function RootLayout({
 
   }
   }, [router]);
-const pathname = usePathname().startsWith('/signUp') || usePathname().startsWith('/signin');
+const pathname =  usePathname().startsWith('/signin');
 console.log(pathname);
   return (
     <html lang="en">
