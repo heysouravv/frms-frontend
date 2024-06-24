@@ -1,18 +1,84 @@
 // @ts-nocheck
-'use client'
+"use client";
 import React, { Key, useEffect, useState } from "react";
 import { fetchData, fetchTrackChangeData } from "@/app/utils/api";
 import PrefilledPopup from "../Popup/PrefilledPopup";
 
-
 // Consider extracting SVGs into separate components if they are reused across the application.
+const SuccessPopup: React.FC<{ close: () => void }> = ({ close }) => {
+  return (
+    <div className="flex bg-white max-w-sm shadow-md absolute w-full z-50 rounded-xl translate-x-full translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
+      <div className="flex items-end justify-end w-full">
+        <img
+          src="/assets/Icons/cross.svg"
+          onClick={close}
+          className="cursor-pointer"
+        />
+      </div>
+      <div>
+        <img src="/assets/Icons/sucess.svg" className="w-20" />
+      </div>
+      <p className="font-semibold text-[#101828] text-xl">
+        Product updated successfully
+      </p>
+      <p className="text-sm text-center text-[#475467] ">
+        A product has been successfully updated and added to the product list.
+      </p>
+      <button
+        type="submit"
+        className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]"
+      >
+        Continue
+      </button>
+      <button
+        onClick={close}
+        className="flex items-center justify-center gap-x-4  text-[#475467]"
+      >
+        <img src="/assets/Icons/leftArrow.svg" />
+        Back to Inventory
+      </button>
+    </div>
+  );
+};
 
+type ErrorProps = {
+  close: () => void;
+};
+
+const ErrorModal = ({ close }: ErrorProps) => {
+  return (
+    <div className="flex bg-white max-w-sm shadow-md absolute w-full z-50 rounded-xl translate-x-full translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
+      <div className="flex items-end justify-end w-full ">
+        <img
+          src="/assets/Icons/cross.svg"
+          onClick={close}
+          className="cursor-pointer"
+        />
+      </div>
+      <div>
+        <img src="/assets/Icons/error.svg" className="w-20" />
+      </div>
+      <p className="font-semibold text-[#101828] text-xl">Some Error Occured</p>
+      <p className="text-sm text-center text-[#475467] ">
+        {" "}
+        Try to Relogin, or please try again later
+      </p>
+      <button
+        type="submit"
+        onClick={close}
+        className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]"
+      >
+        Close
+      </button>
+    </div>
+  );
+};
 
 interface TableRowProps {
   product: {
-  damage_stock: string;
-  empty_stock: string;
-  stokable_flag: boolean;
+    damage_stock: string;
+    empty_stock: string;
+    stokable_flag: boolean;
     effective_date: string;
     price: string;
     product: Key;
@@ -28,116 +94,151 @@ interface TableRowProps {
     type: string;
     taxPerc: string;
   };
-  onClick:  React.MouseEventHandler<HTMLTableRowElement> | undefined;
+  onClick: React.MouseEventHandler<HTMLTableRowElement> | undefined;
 }
 
-
-
-
-
-
-const TableRow = ({ product,onClick }: TableRowProps) => {
-  
+const TableRow = ({ product, onClick }: TableRowProps) => {
   return (
-
-  <tr className="hover:bg-gray-100 border-t border-[#EAECF0] p-3" onClick={onClick} key={product.id}>
-    <td className="px-4 py-4 font-medium flex items-center gap-x-3">
-    <input type="checkbox" className="form-checkbox h-4 w-4 border border-[#D0D5DD] rounded-md  accent-[#FE4F00] "/>
-      {product.name}
+    <tr
+      className="hover:bg-gray-100 border-t border-[#EAECF0] p-3"
+      onClick={onClick}
+      key={product.id}
+    >
+      <td className="px-4 py-4 font-medium flex items-center gap-x-3">
+        <input
+          type="checkbox"
+          className="form-checkbox h-4 w-4 border border-[#D0D5DD] rounded-md  accent-[#FE4F00] "
+        />
+        {product.name}
       </td>
-    <td className="px-4 py-4 text-[#475467]">{product.id}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.hsn_code}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.name}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.min_order_level}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.max_order_level}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.re_order_level}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.purchase_rate}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.sale_rate}</td>
-    {/* Dummy For Now */}
-    <td className="px-4 py-4 text-[#475467]">10%</td>
-  </tr>
-)};
-
+      <td className="px-4 py-4 text-[#475467]">{product.id}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.hsn_code}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.name}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.min_order_level}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.max_order_level}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.re_order_level}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.purchase_rate}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.sale_rate}</td>
+      {/* Dummy For Now */}
+      <td className="px-4 py-4 text-[#475467]">10%</td>
+    </tr>
+  );
+};
 
 const TableRowTrack = ({ product }: TableRowProps) => {
-  
   return (
-
-  <tr className="hover:bg-gray-100 border-t border-[#EAECF0] p-3" key={product.id}>
-    <td className="px-4 py-4 font-medium flex items-center gap-x-3">
-    <input type="checkbox" className="form-checkbox h-4 w-4 border border-[#D0D5DD] rounded-md  accent-[#FE4F00] "/>
-      {product.id}
+    <tr
+      className="hover:bg-gray-100 border-t border-[#EAECF0] p-3"
+      key={product.id}
+    >
+      <td className="px-4 py-4 font-medium flex items-center gap-x-3">
+        <input
+          type="checkbox"
+          className="form-checkbox h-4 w-4 border border-[#D0D5DD] rounded-md  accent-[#FE4F00] "
+        />
+        {product.id}
       </td>
-    <td className="px-4 py-4 text-[#475467]">{product.id}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.price}</td>
-    <td className="px-4 py-4 text-[#475467]">{product.effective_date}</td>
-  </tr>
-)};
+      <td className="px-4 py-4 text-[#475467]">{product.id}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.price}</td>
+      <td className="px-4 py-4 text-[#475467]">{product.effective_date}</td>
+    </tr>
+  );
+};
 
 const TableHeader = ({ children }: { children: React.ReactNode }) => (
   <th className="h-12 px-4 text-[#475467]  text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">
-     
-      <span className="">{children}</span>
-    </th>
+    <span className="">{children}</span>
+  </th>
 );
 
-const Table = ({title,productListUpdated,productUpdate}: {title: string;productListUpdated:boolean;productUpdate:()=>void}) => {
+const Table = ({
+  title,
+  productListUpdated,
+  productUpdate,
+}: {
+  title: string;
+  productListUpdated: boolean;
+  productUpdate: () => void;
+}) => {
   const [products, setProducts] = useState<TableRowProps["product"][]>([]);
-  const [trackRateProducts, setTrackRateProducts] = useState<TableRowProps["product"][]>([]);
-const [isLoading, setIsLoading] = useState(true);
- 
-// For Pagination
-const itemsPerPage = 5;
-const [currentPage, setCurrentPage] = useState(1);
-const data: string | any[] = []; // Define the 'data' variable and provide it with a value
-const totalPages = Math.ceil(data.length / itemsPerPage);
+  const [trackRateProducts, setTrackRateProducts] = useState<
+    TableRowProps["product"][]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-const startIndex = (currentPage - 1) * itemsPerPage;
-const endIndex = startIndex + itemsPerPage;
-const currentData = data.slice(startIndex, endIndex);
+  // For Pagination
+  const itemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const data: string | any[] = []; // Define the 'data' variable and provide it with a value
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
-const goToNextPage = () => setCurrentPage((page) => Math.min(page + 1, totalPages));
-const goToLastPage = () => setCurrentPage(totalPages);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentData = data.slice(startIndex, endIndex);
 
-useEffect(() => {
-    fetchData(setProducts, setIsLoading).then(() => {
-    }).catch((error) => {
-      console.error('Error fetching data:', error);
-    });
-fetchTrackChangeData(setTrackRateProducts, setIsLoading).then((response) => {
-  console.log(response);
-});
-console.log("Product List Updated",trackRateProducts);
-  }, [productListUpdated]);  
+  const goToNextPage = () =>
+    setCurrentPage((page) => Math.min(page + 1, totalPages));
+  const goToLastPage = () => setCurrentPage(totalPages);
+
+  useEffect(() => {
+    fetchData(setProducts, setIsLoading)
+      .then(() => {})
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+    fetchTrackChangeData(setTrackRateProducts, setIsLoading).then(
+      (response) => {
+        console.log(response);
+      }
+    );
+    console.log("Product List Updated", trackRateProducts);
+  }, [productListUpdated]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] =  useState<TableRowProps>({} as TableRowProps);
+  const [selectedProduct, setSelectedProduct] = useState<TableRowProps>(
+    {} as TableRowProps
+  );
 
   const handleRowClick = (product1: TableRowProps) => {
     setSelectedProduct(product1);
     setIsModalOpen(true);
   };
 
-// For overlay 
-const Overlay = () => {
-  return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-overflow:"hidden",
-      height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0.3)',
-      zIndex: 10 // Ensure this is below your popup z-index but above everything else
-    }}></div>
-  );
-};
+  // For overlay
+  const Overlay = () => {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          overflowY: "hidden",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+          zIndex: 10, // Ensure this is below your popup z-index but above everything else
+        }}
+      ></div>
+    );
+  };
 
-  console.log("selected Products",selectedProduct);
-// Basic Pop in animation 
+  console.log("selected Products", selectedProduct);
+  // Basic Pop in animation
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [showErrorModal, setShowErrorModal] = useState<boolean>(true);
+
+  const handleShowSuccessModal = (isSuccess: boolean) => {
+    setShowSuccessModal(isSuccess);
+    setShowErrorModal(isSuccess);
+  };
 
   return (
     <div className="w-full  bg-white shadow-lg border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
+      {showSuccessModal && (
+        <SuccessPopup close={() => setShowSuccessModal(false)} />
+      )}
+      {(showSuccessModal || !showErrorModal) && <Overlay />}
+      
+      {!showErrorModal && <ErrorModal close={() => setShowErrorModal(true)} />}
       <div className="flex justify-between bg-white  px-5 py-5 rounded-lg rounded-b-none  border-b border-b-[#D0D5DD]  items-center w-full ">
         {/* All products */}
         <div>
@@ -211,8 +312,11 @@ overflow:"hidden",
             </thead>
             <tbody>
               {products.map((product1) => (
-
-                <TableRow key={product1.id} product={product1} onClick={() => handleRowClick(product1)} />
+                <TableRow
+                  key={product1.id}
+                  product={product1}
+                  onClick={() => handleRowClick(product1)}
+                />
               ))}
             </tbody>
           </table>
@@ -237,28 +341,48 @@ overflow:"hidden",
             </thead>
             <tbody>
               {trackRateProducts.map((product) => (
-                <TableRowTrack key={product.id} product={product} onClick={undefined} />
+                <TableRowTrack
+                  key={product.id}
+                  product={product}
+                  onClick={undefined}
+                />
               ))}
             </tbody>
           </table>
         )}
       </div>
       {isModalOpen && <Overlay />}
-      {isModalOpen && <PrefilledPopup isOpen={isModalOpen} close={()=>setIsModalOpen(false)} setIsOpen={setIsModalOpen} updateProduct={productUpdate} product={selectedProduct} />}
+      {isModalOpen && (
+        <PrefilledPopup
+          isOpen={isModalOpen}
+          close={() => setIsModalOpen(false)}
+          setIsOpen={setIsModalOpen}
+          updateProduct={productUpdate}
+          product={selectedProduct}
+          handleShowSuccessModal={handleShowSuccessModal}
+        />
+      )}
       <div className="w-full  flex justify-between items-center p-4">
         <p>
           Page {currentPage} of {totalPages}
         </p>
         <div className="flex items-center gap-x-4">
-          <p className="px-4 py-2 border border-[#D0D5DD] text-[#344054] rounded-md" onClick={goToNextPage}>
+          <p
+            className="px-4 py-2 border border-[#D0D5DD] text-[#344054] rounded-md"
+            onClick={goToNextPage}
+          >
             Previous
           </p>
-          <p className="px-4 py-2 border border-[#D0D5DD] text-[#344054]  rounded-md" onClick={goToLastPage}>
+          <p
+            className="px-4 py-2 border border-[#D0D5DD] text-[#344054]  rounded-md"
+            onClick={goToLastPage}
+          >
             Next
           </p>
         </div>
       </div>
     </div>
-  );};
+  );
+};
 
 export default Table;

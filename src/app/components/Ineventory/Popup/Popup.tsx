@@ -89,6 +89,7 @@ type PopupProps = {
   close: () => void;
   next: () => void;
   onProductCreated: ()=>void;
+  handleShowSuccessModal: () => void;
 };
 
 const Popup = ({ close, next,onProductCreated }: PopupProps) => {
@@ -130,6 +131,7 @@ const Popup = ({ close, next,onProductCreated }: PopupProps) => {
   const [sgstPercent, setSgstPercent] = useState("");
   const [cgstPercent, setCgstPercent] = useState("");
 const [checkError,setCheckError]=useState(false);
+
   const handleNextClick = async (e: { preventDefault: () => void; }) => {
     e.preventDefault()
     const body = {

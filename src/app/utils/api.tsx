@@ -1,4 +1,7 @@
 import Cookies from 'js-cookie';
+import { useState } from 'react';
+import axios from 'axios';
+
 export const loginUser = async (email: string, password: string) => {
     const apiEndpoint = "http://100.28.40.109:8000/login/";
     try {
@@ -97,27 +100,55 @@ export const loginUser = async (email: string, password: string) => {
     }
   };
 
-  export const updateProduct = async (productId: any, productData: any, setProductUpdateStatus: (arg0: boolean) => void): Promise<Response> => {
-    const token = Cookies.get("token");
-    try {
-      const response = await fetch(`http://100.28.40.109:8000/products/${productId}/`, {
-        method: "PUT",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(productData),
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+  //export const updateProduct = async (productId: any, productData: any, handleUpdateStatus: (isSuccessful: boolean) => void): Promise<Response> => {
+  //  const token = Cookies.get("token");
+  //  try {
+  //    const response = await fetch(`http://100.28.40.109:8000/products/${productId}/`, {
+  //      method: "PUT",
+  //      headers: {
+  //        'Content-Type': 'application/json',
+  //        'Authorization': `Bearer ${token}`,
+  //      },
+  //      body: JSON.stringify(productData),
+  //    });
+  //    if (!response.ok) {
+  //      throw new Error('Network response was not ok');
+  //    }
+  //    const data = await response.json();
+  //    console.log(data, "Product update successful");
+  //    handleUpdateStatus(true);
+  //    return response;
+  //  } catch (error: any) {
+  //    console.error('There was a problem with your fetch operation:', error);
+  //    handleUpdateStatus(false);
+  //    throw error;
+  //  }
+  //};
+
+  export const useUpdateProduct = () => {
+    const [response, setResponse] = useState<any>(null);
+    const [error, setError] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+  
+    const updateProduct = async (productId: any, productData: any) => {
+      const token = Cookies.get('token');
+      setIsLoading(true);
+  
+      try {
+        const res = await axios.put(`http://100.28.40.109:8000/products/${productId}/`, productData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        setResponse(res.data);
+        setError(null);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
       }
-      const data = await response.json();
-      console.log(data, "Product update successful");
-      setProductUpdateStatus(true);
-      return response; // Add a return statement at the end of the function
-    } catch (error: any) {
-      console.error('There was a problem with your fetch operation:', error);
-      setProductUpdateStatus(false);
-      throw error; // Throw the error to maintain the function's return type
-    }
+    };
+  
+    return { response, error, isLoading, updateProduct };
   };

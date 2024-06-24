@@ -1,8 +1,8 @@
-import { makePostRequest, updateProduct } from "@/app/utils/api";
-import React, { useEffect, useState } from "react";
+// @ts-nocheck
+'use client'
 
-import Successmodal from "../../Modal/Successmodal";
-import Errormodal from "../../Modal/Errormodal";
+import { makePostRequest, useUpdateProduct } from "@/app/utils/api";
+import React, { useEffect, useState } from "react";
 
 const Dropdown = ({
   options,
@@ -83,57 +83,9 @@ const Dropdown = ({
 };
 
 
-type SuccessPopup = {
-  close: () => void;
-};
 
-export const SuccessPopup = ({ close }: SuccessPopup) => {
-      return (
-        <div className="flex bg-white max-w-sm shadow-md absolute w-full z-50 rounded-xl translate-x-full translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
-        <div className='flex items-end justify-end w-full '>
-        <img src='/assets/Icons/cross.svg' onClick={close} className='cursor-pointer' />
+
  
-        </div>
-          <div>
-             <img src="/assets/Icons/sucess.svg" className="w-20" />
-          </div>
-             <p className='font-semibold text-[#101828] text-xl'>Product updated successfully</p>
-             <p className='text-sm text-center text-[#475467] '>A product has been successfully updated and added to the product list.</p>
-             <button type='submit' onClick={close} className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]">
-                        Continue
-                    </button>
-             <button onClick={close} className='flex items-center justify-center gap-x-4  text-[#475467]'>
-                        <img src="/assets/Icons/leftArrow.svg" />
-                        Back to Inventory</button>     
-             </div>
-      );
-      
-  }
-
-  type ErrorProps = {
-    close: () => void;
-  };
-  
-  export const ErrorModal = ({ close }: ErrorProps) => {
-        return (
-          <div className="flex bg-white max-w-sm shadow-md absolute w-full z-50 rounded-xl translate-x-full translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
-          <div className='flex items-end justify-end w-full '>
-          <img src='/assets/Icons/cross.svg' onClick={close} className='cursor-pointer' />
-   
-          </div>
-            <div>
-               <img src="/assets/Icons/error.svg" className="w-20" />
-            </div>
-               <p className='font-semibold text-[#101828] text-xl'>Some Error Occured</p>
-               <p className='text-sm text-center text-[#475467] '>  Try to Relogin, or please try again later</p>
-               <button type='submit' onClick={close} className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]">
-                          Close
-                      </button>
-          
-               </div>
-        );
-        
-    }
 
 
 
@@ -155,10 +107,13 @@ type PopupProps = {
     }
   ; 
   close: () => void;
-  productUpdate:()=>void
+  handleShowSuccessModal:()=>boolean;
+  productUpdate:()=>void;
 };
 
-const PrefilledPopup = ({ product,close,productUpdate }: PopupProps) => {
+
+
+const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal }: PopupProps) => {
 
   // Company
   const [selectedOption1, setSelectedOption1] = useState("Select");
@@ -198,27 +153,13 @@ const PrefilledPopup = ({ product,close,productUpdate }: PopupProps) => {
   const [sgstPercent, setSgstPercent] = useState("");
   const [cgstPercent, setCgstPercent] = useState("");
 
-  // Check error
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+
+  const { response, error, isLoading, updateProduct } = useUpdateProduct();
 
 
-  const [productUpdateStatus,setProductUpdateStatus]=useState<boolean>(false)
- 
-  const handleUpdateStatus = (isSuccessful: any) => {
-    if (isSuccessful) {
-      console.log("Product update was successful.");
-    } else {
-      console.error("Product update failed.");
-    }
-  };
-
-  
   const handleNextClick = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault(); // Prevent the default form submit behavior
+    e.preventDefault();
 
-    // Prepare the body for the POST request
     const body = {
       name: productName,
       hsn_code: selectedOption2,
@@ -231,48 +172,21 @@ const PrefilledPopup = ({ product,close,productUpdate }: PopupProps) => {
       damage_stock: damageStock,
       empty_stock: emptyStock,
       stokable_flag: selectedOption5,
-      price: 120.0, // Assuming static for the example
-      quantity: 50, // Assuming static for the example
+      price: 120.0,
+      quantity: 50,
     };
 
-    try {
-      // Attempt to update the product
-      const response: Response = await updateProduct(productId, body, handleUpdateStatus);
-    
-      // Check if the update was successful
-    
-      if (response.status === 200) {
-        close() //Close the modal
-        // Handle success scenario
-    setShowSuccess(true);
-    console.log("Product update was successful.")
-        // For example, update UI or state to reflect the successful update
-        setProductUpdateStatus(true); // Assuming a state setter function exists
-        // Optionally, you might want to navigate the user to a different page or show a success message
-      } else {
-        setShowError(true);
-        console.log("Product update failed.")
-        setErrorMessage("Product update failed. Please try again."); // Assuming a state setter function exists
-        close() //Close the modal
-        // Handle error scenario
-        // This could involve setting an error state, displaying an error message, etc.
-        setProductUpdateStatus(false); // Assuming a state setter function exists
-      }
-    } catch (error) {
-      // Handle any errors that occurred during the update process
-      setShowError(true);
-      setErrorMessage("Product update failed. Please try again."); // Assuming a state setter function exists
-      close() //Close the modal
-      setProductUpdateStatus(false); // Assuming a state setter function exists
-      console.error(error); // Log the error
-    }
+    await updateProduct(productId, body);
   };
 
-
-
   useEffect(() => {
-    console.log(productUpdateStatus,"this is product update status")
-  },[productUpdateStatus])
+    if (response) {
+      close();
+      handleShowSuccessModal(true);
+    }
+  }, [response, isLoading]);
+
+
   return (
 
     
@@ -280,15 +194,10 @@ const PrefilledPopup = ({ product,close,productUpdate }: PopupProps) => {
     tabIndex={-1}
     aria-hidden="true"
     className={` overflow-hidden z-50 absolute   justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
-    >
+    >    
 
 
-      <div className={`${productUpdateStatus ? "hidden" :""} relative right-64`}>
-      </div>
-      {showSuccess ? <SuccessPopup close={() => setShowSuccess(false)} /> : showError ? <ErrorModal close={()=>setShowError(false)} />  
-      :   
-
-        <form className="relative lg:translate-x-1/3 xl:translate-x-11/12 xl:max-w-xl 2xl:max-w-lg w-full lg:translate-y-5  xl:translate-y-5 bg-white rounded-lg shadow "  onSubmit={handleNextClick}>
+        <form className="relative lg:translate-x-1/3 xl:translate-x-11/12 xl:max-w-lg 2xl:max-w-lg w-1/2 lg:translate-y-5  xl:translate-y-5 bg-white rounded-lg shadow "  onSubmit={handleNextClick}>
           <div className="flex items-center justify-between p-4 md:p-5  ">
             <h3 className="text-lg font-semibold text-[#101828]">
               Create New Product
@@ -435,7 +344,7 @@ const PrefilledPopup = ({ product,close,productUpdate }: PopupProps) => {
                 <input
                   type="text"
                   value={taxPercent}
-                  required
+
                   onChange={(e) => setTaxPercent(e.target.value)}
                   className="placeholder:text-[#667085] font-medium w-full text-black p-2 rounded-md bg-white border border-[#D0D5DD]"
                 />
@@ -555,7 +464,6 @@ const PrefilledPopup = ({ product,close,productUpdate }: PopupProps) => {
               Cancel
             </button>
             <button
-        
               type="submit"
               className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]"
             >
@@ -564,7 +472,7 @@ const PrefilledPopup = ({ product,close,productUpdate }: PopupProps) => {
           </div>
         </form>
 
-      }
+      
     </div>
   );
 };
