@@ -22,14 +22,14 @@ export default function RootLayout({
   const token = Cookies.get("token");
   useEffect(() => {
   if (!token){
-    router.replace('/signin')
+    router.replace('/signIn')
   }
   else{
     router.replace('/')
 
   }
   }, [router]);
-const pathname =  usePathname().startsWith('/signin');
+const pathname =  usePathname().startsWith('/signIn');
 console.log(pathname);
   return (
     <html lang="en">
