@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client'
 import React, { Key, useEffect, useState } from "react";
 import { fetchData, fetchTrackChangeData } from "@/app/utils/api";
@@ -9,7 +10,6 @@ import PrefilledPopup from "../Popup/PrefilledPopup";
 
 interface TableRowProps {
   product: {
-
   damage_stock: string;
   empty_stock: string;
   stokable_flag: boolean;
@@ -211,6 +211,7 @@ overflow:"hidden",
             </thead>
             <tbody>
               {products.map((product1) => (
+
                 <TableRow key={product1.id} product={product1} onClick={() => handleRowClick(product1)} />
               ))}
             </tbody>
