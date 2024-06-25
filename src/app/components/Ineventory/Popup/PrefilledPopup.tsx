@@ -1,8 +1,10 @@
 // @ts-nocheck
 'use client'
 
-import { makePostRequest, useUpdateProduct } from "@/app/utils/api";
+import {  useUpdateProduct } from "@/app/utils/api";
+import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const Dropdown = ({
   options,
@@ -108,12 +110,12 @@ type PrefilledPopupProps = {
   ; 
   close: () => void;
   handleShowSuccessModal:()=>boolean;
-  productUpdate:()=>void;
+  updateProducts:()=>void;
 };
 
 
 
-const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal }: PrefilledPopupProps) => {
+const PrefilledPopup = ({ product, close,updateProducts,  handleShowSuccessModal }: PrefilledPopupProps) => {
 
   // Company
   const [selectedOption1, setSelectedOption1] = useState("Select");
@@ -182,7 +184,13 @@ const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal 
   useEffect(() => {
     if (response) {
       close();
+      updateProducts();
       handleShowSuccessModal(true);
+    }
+    else if (error){
+      close();
+      updateProducts();
+      handleShowSuccessModal(false);
     }
   }, [response, isLoading]);
 
@@ -190,17 +198,21 @@ const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal 
   return (
 
     
-    <div
+    <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
     tabIndex={-1}
     aria-hidden="true"
-    className={` overflow-hidden z-50 absolute   justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
+    className={` overflow-hidden z-50 fixed translate-x-1/4   justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full `}
     >    
 
 
-        <form className="relative lg:translate-x-1/3 xl:translate-x-11/12 xl:max-w-lg 2xl:max-w-lg w-1/2 lg:translate-y-5  xl:translate-y-5 bg-white rounded-lg shadow "  onSubmit={handleNextClick}>
-          <div className="flex items-center justify-between p-4 md:p-5  ">
+        <motion.form
+        className="relative lg:translate-x-1/3 xl:translate-x-11/12  3xl:translate-x-2/4  xl:max-w-lg 2xl:max-w-lg w-1/2 lg:translate-y-5 3xl:translate-y-10  xl:translate-y-5 bg-white rounded-lg shadow "  onSubmit={handleNextClick}>
+          <div className="flex items-center justify-between lg:px-4 lg:py-3 xl:p-4 md:p-5  ">
             <h3 className="text-lg font-semibold text-[#101828]">
-              Create New Product
+            Update Product
             </h3>
 
             <button
@@ -213,7 +225,7 @@ const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal 
               <span className="sr-only">Close modal</span>
             </button>
           </div>
-          <div className="w-full flex justify-start items-start flex-col gap-y-2 px-5">
+          <div className="w-full flex justify-start items-start flex-col lg:gap-y-1 xl:gap-y-2 px-5">
             <div className="w-full flex justify-start gap-x-4 items-center flex-row">
               <div className="flex flex-col justify-start gap-2">
                 <label className="font-medium text-black  text-sm">
@@ -456,7 +468,7 @@ const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal 
               </div>
             </div>
           </div>
-          <div className="w-full flex justify-between items-center gap-x-4 px-5 py-6">
+          <div className="w-full flex justify-between items-center gap-x-4 px-5 lg:py-3 xl:py-6">
             <button
               onClick={close}
               className="font-semibold w-full  items-center  border border-[#D0D5DD] text-[#667085]    rounded-lg text-sm px-4 py-2.5 text-center bg-white"
@@ -467,13 +479,14 @@ const PrefilledPopup = ({ product, close, productUpdate, handleShowSuccessModal 
               type="submit"
               className="font-semibold w-full  items-center   text-white   rounded-lg text-sm px-4 py-2.5 text-center bg-[#FE4F00]"
             >
-              Next
+              {isLoading ? <div className="flex items-center justify-center gap-x-3 "><ClipLoader size={13} color="#ffffff"/> <p>Loading</p></div> : "Next"}
+              
             </button>
           </div>
-        </form>
+        </motion.form>
 
       
-    </div>
+    </motion.div>
   );
 };
 

@@ -120,7 +120,7 @@ overflow:"hidden",
             </div>
           ))}
         </div>
-        <Table title="All Products" productListUpdated={productListUpdated} productUpdate={()=>handleProductUpdate} />
+        <Table title="All Products" productListUpdated={productListUpdated} productUpdate={handleProductUpdate} />
       </div>
     </div>
   );

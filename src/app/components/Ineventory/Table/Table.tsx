@@ -3,18 +3,23 @@
 import React, { Key, useEffect, useState } from "react";
 import { fetchData, fetchTrackChangeData } from "@/app/utils/api";
 import PrefilledPopup from "../Popup/PrefilledPopup";
+import { motion } from "framer-motion";
 
 // Consider extracting SVGs into separate components if they are reused across the application.
 const SuccessPopup: React.FC<{ close: () => void }> = ({ close }) => {
   return (
-    <div className="flex bg-white max-w-sm shadow-md absolute w-full z-50 rounded-xl translate-x-full translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
-      <div className="flex items-end justify-end w-full">
+    <motion.div
+    initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+    className="flex bg-white max-w-sm shadow-md fixed w-full z-50 rounded-xl translate-x-3/4 -translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
+      <motiondiv className="flex items-end justify-end w-full">
         <img
           src="/assets/Icons/cross.svg"
           onClick={close}
           className="cursor-pointer"
         />
-      </div>
+      </motiondiv>
       <div>
         <img src="/assets/Icons/sucess.svg" className="w-20" />
       </div>
@@ -37,7 +42,7 @@ const SuccessPopup: React.FC<{ close: () => void }> = ({ close }) => {
         <img src="/assets/Icons/leftArrow.svg" />
         Back to Inventory
       </button>
-    </div>
+    </motion.div>
   );
 };
 
@@ -47,7 +52,7 @@ type ErrorProps = {
 
 const ErrorModal = ({ close }: ErrorProps) => {
   return (
-    <div className="flex bg-white max-w-sm shadow-md absolute w-full z-50 rounded-xl translate-x-full translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
+    <div className="flex bg-white max-w-sm shadow-md fixed w-full z-50 rounded-xl translate-x-3/4 -translate-y-1/2 px-5 py-5 justify-center flex-col gap-y-5 items-center">
       <div className="flex items-end justify-end w-full ">
         <img
           src="/assets/Icons/cross.svg"
@@ -93,6 +98,9 @@ interface TableRowProps {
     hsnCode: string;
     type: string;
     taxPerc: string;
+    product: Product;
+    onCheckboxChange: (productId: string, isSelected: boolean) => void;
+    isSelected: boolean;
   };
   onClick: React.MouseEventHandler<HTMLTableRowElement> | undefined;
 }
@@ -125,7 +133,11 @@ const TableRow = ({ product, onClick }: TableRowProps) => {
   );
 };
 
-const TableRowTrack = ({ product }: TableRowProps) => {
+const TableRowTrack = ({ product,onCheckboxChange, isSelected  }: TableRowProps) => {
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCheckboxChange(product.id, e.target.checked,product.price,product.effective_date);
+  };
   return (
     <tr
       className="hover:bg-gray-100 border-t border-[#EAECF0] p-3"
@@ -135,10 +147,12 @@ const TableRowTrack = ({ product }: TableRowProps) => {
         <input
           type="checkbox"
           className="form-checkbox h-4 w-4 border border-[#D0D5DD] rounded-md  accent-[#FE4F00] "
+          checked={isSelected}
+          onChange={handleCheckboxChange}
         />
         {product.id}
       </td>
-      <td className="px-4 py-4 text-[#475467]">{product.id}</td>
+
       <td className="px-4 py-4 text-[#475467]">{product.price}</td>
       <td className="px-4 py-4 text-[#475467]">{product.effective_date}</td>
     </tr>
@@ -230,6 +244,17 @@ const Table = ({
     setShowSuccessModal(isSuccess);
     setShowErrorModal(isSuccess);
   };
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+
+  const handleCheckboxChange = (productId: string, isSelected: boolean) => {
+    if (isSelected) {
+      setSelectedProducts((prevSelected) => [...prevSelected, productId]);
+    } else {
+      setSelectedProducts((prevSelected) => prevSelected.filter((id) => id !== productId));
+    }
+  };
+
+  console.log("Selected Products", selectedProducts);
 
   return (
     <div className="w-full  bg-white shadow-lg border-t border-r border-l border-b border-[#D0D5DD] rounded-lg">
@@ -335,8 +360,8 @@ const Table = ({
                   </span>
                 </TableHeader>
                 <TableHeader>Price</TableHeader>
-                <TableHeader>Product type</TableHeader>
                 <TableHeader>Date</TableHeader>
+             
               </tr>
             </thead>
             <tbody>
@@ -345,6 +370,8 @@ const Table = ({
                   key={product.id}
                   product={product}
                   onClick={undefined}
+                  onCheckboxChange={handleCheckboxChange}
+                  isSelected={selectedProducts.includes(product.id,product.effective_date,product.price)}
                 />
               ))}
             </tbody>
@@ -357,7 +384,7 @@ const Table = ({
           isOpen={isModalOpen}
           close={() => setIsModalOpen(false)}
           setIsOpen={setIsModalOpen}
-          updateProduct={productUpdate}
+          updateProducts={productUpdate}
           product={selectedProduct}
           handleShowSuccessModal={handleShowSuccessModal}
         />

@@ -156,7 +156,7 @@ const handleLogout = () => {
 
       <div className="flex flex-col w-full justify-between h-full items-start">
         <div className="w-full">
-          <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-0">
+          <ul className={`${openSubMenu ? "pb-0 pt-4" :"py-4"} lg:flex hidden flex-col mx-4 py-4 gap-y-0`}>
             {Menus.map((menu, id) => {
               return (
                 <React.Fragment key={id}>
@@ -203,7 +203,7 @@ const handleLogout = () => {
             })}
           </ul>
           <hr className="border border-[#EAECF0] " />
-          <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-2">
+          <ul className={`${openSubMenu ? "py-2 gap-y-1" :"py-4 gap-y-2"} lg:flex hidden flex-col mx-4 `}>
             <p className="font-semibold">About ERP</p>
             {About.map((menu, id) => {
               return (
@@ -227,7 +227,7 @@ const handleLogout = () => {
         </div>
 
         <div className="w-full border-t border-[#EAECF0]">
-          <ul className="lg:flex hidden flex-col mx-4 py-4 gap-y-2">
+          <ul className={`${openSubMenu ? "py-2 gap-y-1" :"py-4 gap-y-2" } lg:flex hidden flex-col mx-4 `}>
             {support.map((menu, id) => {
               return (
                 <React.Fragment key={id}>

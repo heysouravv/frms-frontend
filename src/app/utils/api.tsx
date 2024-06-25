@@ -130,7 +130,7 @@ export const loginUser = async (email: string, password: string) => {
     const [error, setError] = useState<any>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
   
-    const updateProduct = async (productId: any, productData: any) => {
+    const updateProduct = async (productId: any, productData: any ) => {
       const token = Cookies.get('token');
       setIsLoading(true);
   
@@ -143,6 +143,7 @@ export const loginUser = async (email: string, password: string) => {
         });
         setResponse(res.data);
         setError(null);
+
       } catch (err) {
         setError(err);
       } finally {

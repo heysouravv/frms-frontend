@@ -1,7 +1,6 @@
 'use client'
 import InventoryHeader from '@/app/components/Header/InventoryHeader';
 import NewProductRates from '@/app/components/Ineventory/Popup/NewProductRates';
-
 import Table from '@/app/components/Ineventory/Table/Table';
 import Link from 'next/link';
 import React, { useState } from 'react'
@@ -39,8 +38,11 @@ const buttons = [
     className: "bg-primaryOrange rounded-lg px-4 py-3 text-white",
   },
 ];
+
+
+
     return (
-    <div className={`no-scrollbar p-4 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
+    <div className={` no-scrollbar h-screen  p-4 flex justify-start relative flex-col gap-y-3 items-start w-full`}>
 {/* Breadcrumb */}
 <Link href={'/Inventory'} className='cursor-pointer flex items-center gap-x-3 justify-start w-full'>
 <img src='/assets/Icons/leftOrange.svg' />
